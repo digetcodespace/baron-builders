@@ -60,7 +60,7 @@ export async function inviteUser(ctx: RequestContext, raw: unknown): Promise<Inv
     details: { role: input.role, email: input.email },
   });
 
-  const signInUrl = `${ctx.siteUrl}/sign-in?email=${encodeURIComponent(input.email)}`;
+  const signInUrl = `${ctx.siteUrl}/sign-in?for=${input.role}&email=${encodeURIComponent(input.email)}`;
   let emailSent = false;
   if (isEmailAvailable()) {
     try {

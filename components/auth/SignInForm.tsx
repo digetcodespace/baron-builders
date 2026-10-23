@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type R
 import { Button, OtpField, TextField } from "@/components/ui";
 import { AUTH_OTP_LENGTH } from "@/lib/config";
 import { useSignIn } from "@/hooks/useSignIn";
+import { PERSONAS, type Persona } from "./personas";
 
 /**
  * One piece of a step. When its step becomes active it eases into place (rising a
@@ -28,7 +29,7 @@ function Reveal({ show, order = 0, children, className = "" }: { show: boolean; 
  * going back reverses it. The wording after step one is the same whether or not the address has
  * an account.
  */
-export function SignInForm({ initialEmail = "" }: { initialEmail?: string }) {
+export function SignInForm({ initialEmail = "", persona = "default" }: { initialEmail?: string; persona?: Persona }) {
   const { step, email, emailError, codeError, busy, cooldown, attempt, requestCode, verify, backToEmail } = useSignIn(initialEmail);
   const [draft, setDraft] = useState(initialEmail);
   const emailPanel = useRef<HTMLDivElement>(null);
@@ -59,8 +60,8 @@ export function SignInForm({ initialEmail = "" }: { initialEmail?: string }) {
       >
         <form onSubmit={onSubmit} noValidate>
           <Reveal show={!onCode} order={0}>
-            <h2 className="t-h1">Sign in</h2>
-            <p className="mt-2 t-body">We will email you a code. No password to remember.</p>
+            <h2 className="t-h1">{PERSONAS[persona].title}</h2>
+            <p className="mt-2 t-body">We will email you a code.</p>
           </Reveal>
           <Reveal show={!onCode} order={1} className="mt-8">
             <TextField
@@ -80,9 +81,6 @@ export function SignInForm({ initialEmail = "" }: { initialEmail?: string }) {
               Email me a code
             </Button>
           </Reveal>
-          <Reveal show={!onCode} order={3}>
-            <p className="mt-8 t-small">Accounts are created by the Baron Builders office.</p>
-          </Reveal>
         </form>
       </div>
 
@@ -93,16 +91,16 @@ export function SignInForm({ initialEmail = "" }: { initialEmail?: string }) {
         className={`${panel} ${onCode ? "translate-x-0 opacity-100 blur-0" : "pointer-events-none translate-x-10 opacity-0 blur-[4px]"}`}
       >
         <Reveal show={onCode} order={0}>
-          <h2 className="t-h1">Check your email</h2>
+          <h2 className="t-h1">Enter your code</h2>
           <p className="mt-2 t-body">
-            If <span className="font-semibold text-text">{email}</span> has an account, we just sent it a {AUTH_OTP_LENGTH}-digit code.
+            Sent to <span className="font-semibold text-text">{email}</span>
           </p>
         </Reveal>
         <Reveal show={onCode} order={1} className="mt-8">
           <OtpField
             key={attempt}
             length={AUTH_OTP_LENGTH}
-            label="One-time code"
+            label="Code"
             error={codeError}
             disabled={busy}
             autoFocus={onCode}
@@ -111,14 +109,11 @@ export function SignInForm({ initialEmail = "" }: { initialEmail?: string }) {
         </Reveal>
         <Reveal show={onCode} order={2} className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1">
           <Button variant="ghost" size="sm" disabled={cooldown > 0 || busy} onClick={() => void requestCode(email)}>
-            {cooldown > 0 ? `Send a new code in ${cooldown}s` : "Send a new code"}
+            {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend code"}
           </Button>
           <Button variant="ghost" size="sm" disabled={busy} onClick={backToEmail}>
-            Use a different email
+            Change email
           </Button>
-        </Reveal>
-        <Reveal show={onCode} order={3}>
-          <p className="mt-8 t-small">Codes expire after an hour. The newest one is the only one that works.</p>
         </Reveal>
       </div>
     </div>
