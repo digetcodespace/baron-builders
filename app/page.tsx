@@ -1,7 +1,8 @@
-export default function Home() {
-  return (
-    <main className="flex flex-1 items-center justify-center p-6">
-      <h1 className="t-h1">Baron Builders</h1>
-    </main>
-  );
+import { redirectToPortal } from "@/lib/http";
+
+export default async function Home() {
+  return redirectToPortal();
 }
+
+/** Role-gated per request; never prerender. */
+export const dynamic = "force-dynamic";

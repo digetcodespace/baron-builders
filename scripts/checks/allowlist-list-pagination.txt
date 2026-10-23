@@ -1,0 +1,3 @@
+# lib/data list* functions that do not return Page<T>. Format: <file>#<function>   # reason
+# A new exception goes here with a reason (why every row is needed, and which end a .limit() keeps).
+# Prefer paginating. This list should stay empty or shrink.

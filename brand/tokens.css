@@ -49,6 +49,12 @@
   --shadow-1:0 1px 2px rgb(16 17 20/.06),0 1px 1px rgb(16 17 20/.04);
   --shadow-2:0 8px 24px -8px rgb(16 17 20/.18);
   --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px; --s-8:72px;
+
+  /* ---------- Motion + layering (app UI) ---------- */
+  --dur-fast:120ms; --dur-base:200ms;
+  --ease-out:cubic-bezier(.2,.8,.2,1);
+  --z-sticky:20; --z-tooltip:40; --z-banner:50; --z-toast:60;
+  --focus-ring:0 0 0 3px rgb(196 30 42/.35);
 }
 
 /* ---------- Base + type utilities ---------- */

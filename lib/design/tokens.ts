@@ -41,6 +41,21 @@ export const shadow = {
   high: "var(--shadow-2)",
 } as const;
 
+export const motion = {
+  fast: "var(--dur-fast)",
+  base: "var(--dur-base)",
+  easeOut: "var(--ease-out)",
+} as const;
+
+export const zIndex = {
+  sticky: "var(--z-sticky)",
+  tooltip: "var(--z-tooltip)",
+  banner: "var(--z-banner)",
+  toast: "var(--z-toast)",
+} as const;
+
+export const focusRing = "var(--focus-ring)";
+
 export const space = {
   1: "var(--s-1)",
   2: "var(--s-2)",

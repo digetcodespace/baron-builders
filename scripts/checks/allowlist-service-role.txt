@@ -1,0 +1,6 @@
+# Files allowed to use the service-role client. One path per line, with a reason.
+# The reasons are a closed list: see ServiceRoleReason in lib/services/_context.ts.
+
+lib/services/_context.ts   # defines getServiceSupabase, the only door
+lib/services/audit.ts      # no-user-write-policy: audit_log has no authenticated write policy by design
+lib/data/_supabase.ts      # defines createAdminClient, reached only through getServiceSupabase
