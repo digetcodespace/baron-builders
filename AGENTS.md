@@ -62,6 +62,8 @@ Every control is custom and lives in `components/ui/` (one file each, exported f
 
 **Design language.** One field frame for every labeled input: a floating label, a focus ring, and the "slab", a slanted red bar that draws under the field on focus (the logo's ground slab). Buttons lift on hover, settle on press, and primary buttons catch a sheen. Selected states use brand red with a soft tint. All motion comes from the keyframes and easing tokens in `app/globals.css` and `brand/tokens.css`, and respects reduced-motion.
 
+**Smoothness rules.** Animate `transform` and `opacity` only (never `top`, `left`, or `height`; collapse with the grid-rows trick). Shadows that transition must have the same shape on both ends (see the `--shadow-field-*` tokens). Base behavior (hand cursor on everything clickable, keyboard focus outline, thin scrollbars, smooth anchor scroll) lives in `@layer base` in `app/globals.css`, so any component utility can override it; never add unlayered global rules, because they beat every utility. Fonts load through `next/font` in `app/layout.tsx`. Every page eases in through `app/template.tsx`.
+
 **Rules for new components.** Colors, radii, shadows, durations, and z-indexes come from tokens only. Labeled inputs use `FieldShell` (never hand-roll a label and input). Overlays use `Portal`, `usePresence`, and the focus and scroll hooks in `components/ui/_hooks.ts`. Icon-only buttons are `IconButton` (tooltip built in). Never add a second toast, modal, or tooltip.
 
 ## Folder map

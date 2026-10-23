@@ -45,7 +45,7 @@ export function IconButton({
     <button
       type={type}
       aria-label={label}
-      className={`inline-flex shrink-0 select-none items-center justify-center rounded-md transition-[background-color,box-shadow,transform,border-color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:-translate-y-px active:translate-y-0 active:scale-95 disabled:pointer-events-none disabled:opacity-50 ${VARIANTS[variant]} ${SIZES[size].box} ${className}`}
+      className={`inline-flex shrink-0 select-none items-center justify-center rounded-md transition-[background-color,box-shadow,transform,border-color] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-px active:translate-y-0 active:scale-95 active:duration-[var(--dur-fast)] disabled:pointer-events-none disabled:opacity-50 ${VARIANTS[variant]} ${SIZES[size].box} ${className}`}
       {...rest}
     >
       <Icon name={icon} size={SIZES[size].icon} />

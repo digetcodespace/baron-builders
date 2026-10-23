@@ -34,7 +34,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
   if (!mounted) return null;
   return (
     <Portal>
-      <div className="fixed inset-0 z-[var(--z-overlay)] flex items-end justify-center p-0 sm:items-center sm:p-6">
+      <div data-state={state} className="fixed inset-0 z-[var(--z-overlay)] flex items-end data-[state=closed]:pointer-events-none justify-center p-0 sm:items-center sm:p-6">
         <div
           aria-hidden="true"
           data-state={state}

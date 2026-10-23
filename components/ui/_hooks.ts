@@ -117,29 +117,23 @@ export function useControllable<T>(
 
 /**
  * Keeps an element mounted long enough to play its exit animation.
- * `state` is "open" while visible and "closed" while leaving.
+ * `state` is "open" while visible and "closed" while leaving; it flips in the
+ * same render as `open`, so enter and exit animations never flash the wrong one.
  */
 export function usePresence(open: boolean, exitMs = 200) {
-  const [mounted, setMounted] = useState(open);
-  const [state, setState] = useState<"open" | "closed">(open ? "open" : "closed");
+  const [previous, setPrevious] = useState(open);
+  const [leaving, setLeaving] = useState(false);
+  // Derived-state pattern: adjust during render when `open` flips, no extra frame.
+  if (open !== previous) {
+    setPrevious(open);
+    setLeaving(!open);
+  }
   useEffect(() => {
-    let frame = 0;
-    let timer = 0;
-    if (open) {
-      frame = requestAnimationFrame(() => {
-        setMounted(true);
-        setState("open");
-      });
-    } else {
-      frame = requestAnimationFrame(() => setState("closed"));
-      timer = window.setTimeout(() => setMounted(false), exitMs);
-    }
-    return () => {
-      cancelAnimationFrame(frame);
-      window.clearTimeout(timer);
-    };
-  }, [open, exitMs]);
-  return { mounted: mounted || open, state };
+    if (!leaving) return;
+    const timer = window.setTimeout(() => setLeaving(false), exitMs);
+    return () => window.clearTimeout(timer);
+  }, [leaving, exitMs]);
+  return { mounted: open || leaving, state: (open ? "open" : "closed") as "open" | "closed" };
 }
 
 export type Placement = "bottom-start" | "bottom-end" | "top-start" | "top-end";

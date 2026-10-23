@@ -111,7 +111,7 @@ export function Menu({ items, label, placement = "bottom-end", trigger }: MenuPr
             onKeyDown={onKeyDown}
             data-state={state}
             style={{ position: "fixed", top: 0, left: 0, visibility: "hidden" }}
-            className="z-[var(--z-popover)] min-w-52 rounded-lg border border-border bg-surface p-1.5 shadow-overlay outline-none data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
+            className="z-[var(--z-popover)] min-w-52 rounded-lg border border-border bg-surface p-1.5 shadow-overlay outline-none data-[state=closed]:pointer-events-none data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
           >
             {items.map((item, index) => (
               <div key={item.id}>

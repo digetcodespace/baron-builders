@@ -42,7 +42,7 @@ Everything is in [`brand/`](brand/). Open [`brand/brand.html`](brand/brand.html)
 - **Geist** (400–700): all interface text.
 - **Geist Mono** (400–600): job IDs, amounts, dates. Use tabular figures so columns align.
 - Scale: display 76 / h1 44 / h2 32 / h3 22 / h4 18 / lead 19 / body 16 / UI 15 / small 13 / label 12 (uppercase, +12% tracking). Nothing readable goes below 13px.
-- Fonts currently load from Google Fonts via `tokens.css`. Self-host them before launch if the suite must work offline.
+- In the app, fonts load through `next/font` (self-hosted by Next, preloaded). `brand/fonts.css` carries the Google Fonts import for the standalone brand pages only.
 
 ## Preloader
 

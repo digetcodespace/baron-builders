@@ -1,0 +1,2 @@
+/* Brand fonts for the standalone brand pages. The app loads the same fonts through next/font (see app/layout.tsx). */
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Geist:wght@300..800&family=Geist+Mono:wght@400..600&display=swap");

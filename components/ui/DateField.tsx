@@ -80,7 +80,7 @@ export function DateField({ label, value, defaultValue, onChange, min, max, hint
             aria-label={`Choose ${label}`}
             data-state={state}
             style={{ position: "fixed", top: 0, left: 0, visibility: "hidden" }}
-            className="z-[var(--z-popover)] rounded-lg border border-border bg-surface shadow-overlay data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
+            className="z-[var(--z-popover)] rounded-lg border border-border bg-surface shadow-overlay data-[state=closed]:pointer-events-none data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
           >
             <Calendar
               value={selected}

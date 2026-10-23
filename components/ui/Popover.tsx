@@ -55,7 +55,7 @@ export function Popover({ trigger, children, placement = "bottom-start", label }
             aria-label={label}
             data-state={state}
             style={{ position: "fixed", top: 0, left: 0, visibility: "hidden" }}
-            className="z-[var(--z-popover)] rounded-lg border border-border bg-surface p-4 shadow-overlay data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
+            className="z-[var(--z-popover)] rounded-lg border border-border bg-surface p-4 shadow-overlay data-[state=closed]:pointer-events-none data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in"
           >
             {typeof children === "function" ? children(close) : children}
           </div>

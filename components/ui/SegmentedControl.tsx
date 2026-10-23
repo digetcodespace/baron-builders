@@ -54,8 +54,8 @@ export function SegmentedControl({ label, options, value, defaultValue, onChange
       {thumb ? (
         <span
           aria-hidden="true"
-          className="absolute bottom-1 top-1 rounded-[calc(var(--r-md)-3px)] bg-surface shadow-low transition-[left,width] duration-[var(--dur-slow)] ease-[var(--ease-spring)]"
-          style={{ left: thumb.left, width: thumb.width }}
+          className="absolute bottom-1 left-0 top-1 rounded-[calc(var(--r-md)-3px)] bg-surface shadow-low transition-[transform,width] duration-[var(--dur-slow)] ease-[var(--ease-out)]"
+          style={{ transform: `translateX(${thumb.left}px)`, width: thumb.width }}
         />
       ) : null}
       {options.map((option) => {

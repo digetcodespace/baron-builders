@@ -49,8 +49,8 @@
 
 /* Motion: every animation in the UI is defined here, from the brand's easing and timing tokens. */
 @theme {
-  --animate-pop-in: pop-in var(--dur-base) var(--ease-spring) both;
-  --animate-pop-out: pop-out var(--dur-fast) var(--ease-in-out) both;
+  --animate-pop-in: pop-in var(--dur-base) var(--ease-out) both;
+  --animate-pop-out: pop-out 140ms var(--ease-in-out) both;
   --animate-fade-in: fade-in var(--dur-base) var(--ease-out) both;
   --animate-fade-out: fade-out var(--dur-fast) var(--ease-in-out) both;
   --animate-rise-in: rise-in var(--dur-slow) var(--ease-out) both;
@@ -60,7 +60,7 @@
   --animate-slide-out-down: slide-out-down var(--dur-base) var(--ease-in-out) both;
   --animate-toast-in: toast-in var(--dur-slow) var(--ease-spring) both;
   --animate-toast-out: toast-out var(--dur-base) var(--ease-in-out) both;
-  --animate-shake: shake 360ms var(--ease-out) both;
+  --animate-shake: shake 420ms var(--ease-out) both;
   --animate-sheen: sheen 720ms var(--ease-out) both;
   --animate-pulse-ring: pulse-ring 1.8s var(--ease-out) infinite;
   --animate-indeterminate: indeterminate 1.4s var(--ease-in-out) infinite;
@@ -71,15 +71,16 @@
   --animate-countdown: countdown linear both;
   --animate-march: march 700ms linear infinite;
   --animate-check-pop: check-pop var(--dur-base) var(--ease-spring) both;
+  --animate-page-in: page-in 380ms var(--ease-out) both;
   --animate-expand: expand var(--dur-base) var(--ease-out) both;
 
   @keyframes pop-in {
-    from { opacity: 0; transform: translateY(6px) scale(0.96); }
+    from { opacity: 0; transform: translateY(-4px) scale(0.97); }
     to { opacity: 1; transform: none; }
   }
   @keyframes pop-out {
     from { opacity: 1; transform: none; }
-    to { opacity: 0; transform: translateY(4px) scale(0.97); }
+    to { opacity: 0; transform: translateY(-2px) scale(0.98); }
   }
   @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
   @keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
@@ -129,18 +130,72 @@
     70% { transform: scale(1.12); opacity: 1; }
     100% { transform: scale(1); opacity: 1; }
   }
+  @keyframes page-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
   @keyframes expand { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 }
 
-/* Floating UI (tooltips) can overhang the viewport edge while hidden; never let it widen the page. */
-body {
-  overflow-x: clip;
-}
+/* Base behavior. Lives in the base layer so any component utility can override it. */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+    scrollbar-width: thin;
+    scrollbar-color: var(--n-300) transparent;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--n-300) transparent;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--primary) 22%, transparent);
+  }
 
-/* Shared focus treatment for every interactive primitive. */
-:where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
+  /* Floating UI (tooltips) can overhang the viewport edge while hidden; never let it widen the page. */
+  body {
+    overflow-x: clip;
+  }
+
+  /* Anything clickable shows the hand; anything disabled says no. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="tab"],
+  [role="menuitem"],
+  [role="option"],
+  [role="switch"],
+  [role="radio"],
+  [role="checkbox"],
+  summary,
+  select,
+  label[for],
+  a[href],
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="file"] {
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  button:disabled,
+  [aria-disabled="true"],
+  input:disabled {
+    cursor: not-allowed;
+  }
+
+  /* Keyboard focus: a soft brand outline that eases in. Mouse clicks never show it. */
+  :where(a, button, [role="button"], [role="tab"], [role="switch"], [role="menuitem"], summary, [tabindex]):focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--primary) 70%, transparent);
+    outline-offset: 3px;
+  }
+  :where(a, button, [role="button"], [role="tab"], [role="switch"], [role="menuitem"], summary, [tabindex]) {
+    transition-property: outline-offset, outline-color;
+    transition-duration: var(--dur-fast);
+  }
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+  }
 }
 
 .shimmer {

@@ -30,7 +30,7 @@ export function Drawer({ open, onClose, title, description, children, footer, si
   const right = side === "right";
   return (
     <Portal>
-      <div className="fixed inset-0 z-[var(--z-overlay)]">
+      <div data-state={state} className="fixed inset-0 z-[var(--z-overlay)] data-[state=closed]:pointer-events-none">
         <div
           aria-hidden="true"
           data-state={state}

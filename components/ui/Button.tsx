@@ -25,8 +25,11 @@ const SIZES: Record<ButtonSize, string> = {
 
 const SHEEN = new Set<ButtonVariant>(["primary", "ink"]);
 
+/** Cancels the flex gap when the leading slot is empty, so a button never shifts when loading starts. */
+const GAP_PULL: Record<ButtonSize, string> = { sm: "-mr-1.5", md: "-mr-2", lg: "-mr-2.5" };
+
 export function buttonClasses(variant: ButtonVariant, size: ButtonSize, extra = "") {
-  return `group/btn relative inline-flex select-none items-center justify-center overflow-hidden rounded-md whitespace-nowrap transition-[background-color,box-shadow,transform,border-color,color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:-translate-y-px active:translate-y-0 active:scale-[.985] disabled:pointer-events-none disabled:opacity-50 ${VARIANTS[variant]} ${SIZES[size]} ${extra}`;
+  return `group/btn relative inline-flex select-none items-center justify-center overflow-hidden rounded-md whitespace-nowrap transition-[background-color,box-shadow,transform,border-color,color] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-px active:translate-y-0 active:scale-[.98] active:duration-[var(--dur-fast)] disabled:pointer-events-none disabled:opacity-50 ${VARIANTS[variant]} ${SIZES[size]} ${extra}`;
 }
 
 function Sheen({ variant }: { variant: ButtonVariant }) {
@@ -76,7 +79,13 @@ export function Button({
       {...rest}
     >
       <Sheen variant={variant} />
-      {loading ? <Spinner size="sm" /> : leftIcon ? <Icon name={leftIcon} size={iconSize} /> : null}
+      <span
+        aria-hidden="true"
+        style={{ width: loading || leftIcon ? iconSize : 0 }}
+        className={`relative inline-flex shrink-0 items-center justify-center overflow-hidden transition-[width,margin,opacity] duration-[var(--dur-base)] ease-[var(--ease-out)] ${loading || leftIcon ? "opacity-100" : `opacity-0 ${GAP_PULL[size]}`}`}
+      >
+        {loading ? <Spinner size="sm" /> : leftIcon ? <Icon name={leftIcon} size={iconSize} /> : null}
+      </span>
       <span className="relative">{children}</span>
       {rightIcon && !loading ? (
         <Icon

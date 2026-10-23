@@ -43,7 +43,7 @@ function Toast({ toast, onDismiss }: { toast: ToastData; onDismiss: (id: number)
 
   const dismiss = useCallback(() => {
     setLeaving(true);
-    window.setTimeout(() => onDismiss(toast.id), 200);
+    window.setTimeout(() => onDismiss(toast.id), 300);
   }, [onDismiss, toast.id]);
 
   useEffect(() => {
@@ -58,10 +58,14 @@ function Toast({ toast, onDismiss }: { toast: ToastData; onDismiss: (id: number)
 
   return (
     <div
+      className={`grid pointer-events-auto transition-[grid-template-rows,margin] duration-[var(--dur-base)] ease-[var(--ease-out)] ${leaving ? "-mb-2 grid-rows-[0fr]" : "grid-rows-[1fr]"}`}
+    >
+    <div className={leaving ? "min-h-0 overflow-hidden" : "min-h-0"}>
+    <div
       role="status"
       onPointerEnter={() => setPaused(true)}
       onPointerLeave={() => setPaused(false)}
-      className={`pointer-events-auto relative overflow-hidden rounded-lg border border-border bg-surface shadow-overlay ${leaving ? "animate-toast-out" : "animate-toast-in"}`}
+      className={`relative overflow-hidden rounded-lg border border-border bg-surface shadow-overlay ${leaving ? "animate-toast-out" : "animate-toast-in"}`}
     >
       <div className="flex items-start gap-3 py-3.5 pl-4 pr-2">
         <Icon name={tone.icon} size={20} className={`mt-0.5 ${tone.accent}`} />
@@ -87,6 +91,8 @@ function Toast({ toast, onDismiss }: { toast: ToastData; onDismiss: (id: number)
           style={{ animationDuration: `${duration}ms`, animationPlayState: paused ? "paused" : "running" }}
         />
       ) : null}
+    </div>
+    </div>
     </div>
   );
 }

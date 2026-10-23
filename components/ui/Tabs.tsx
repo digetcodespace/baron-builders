@@ -86,8 +86,8 @@ export function Tabs({ label, tabs, value, defaultValue, onChange, className = "
         {bar ? (
           <span
             aria-hidden="true"
-            className="absolute -bottom-px h-[3px] bg-primary transition-[left,width] duration-[var(--dur-slow)] ease-[var(--ease-spring)] [clip-path:polygon(0_0,calc(100%-var(--slant))_0,100%_100%,0_100%)]"
-            style={{ left: bar.left, width: bar.width }}
+            className="absolute -bottom-px left-0 h-[3px] bg-primary transition-[transform,width] duration-[var(--dur-slow)] ease-[var(--ease-out)] [clip-path:polygon(0_0,calc(100%-var(--slant))_0,100%_100%,0_100%)]"
+            style={{ transform: `translateX(${bar.left}px)`, width: bar.width }}
           />
         ) : null}
       </div>
