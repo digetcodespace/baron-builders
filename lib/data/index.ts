@@ -17,4 +17,4 @@ export { insertAuditEntry } from "./audit";
 export { getHouse, isHouseBuyer, listHouses } from "./houses";
 export type { ListHousesParams } from "./houses";
 export { getProfile } from "./profiles";
-export type { AuditEntryInput, HouseRow, ProfileRow, ProjectRow, UserRole } from "./types";
+export type { AuditEntryInput, HouseRow, ItemKind, ProfileRow, ProjectRow, UserRole, VendorStage } from "./types";

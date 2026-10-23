@@ -35,3 +35,12 @@ export interface AuditEntryInput {
   houseId?: string | null;
   details?: Record<string, unknown>;
 }
+
+export type ItemKind = "choice" | "addon" | "quantity" | "vendor";
+
+export type VendorStage =
+  | "not_started"
+  | "contacted_buyer"
+  | "met_with_buyer"
+  | "finalized"
+  | "confirmed_by_office";

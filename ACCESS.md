@@ -53,4 +53,11 @@ Every access change ships with tests for: a buyer on a different house, a buyer 
 
 ## Status
 
-Foundation migration ([20261022000001_foundation.sql](supabase/migrations/20261022000001_foundation.sql)) covers staff and buyer access to projects and houses, vendor access to their own company, and the audit log. Vendor access to houses, and everything about sheets, selections, invoices, and payments, lands in the next migration.
+[Foundation](supabase/migrations/20261022000001_foundation.sql) covers staff and buyer access to projects and houses, a vendor's own company, and the audit log.
+
+[Sheets, selections, and vendor items](supabase/migrations/20261022000002_sheets_selections_vendor_items.sql) adds:
+- Buyers read a sheet once their house reaches its status, and pick only on their own house until the sheet is signed.
+- Vendors read only houses with an open item for their company, the buyers' contact details on those houses, and their own items. They never reach selections, prices, or invoices.
+- Signing goes only through `sign_sheet()` (service role), and signed selections are locked for everyone.
+
+It is written but **not yet run against a database**. Invoices, payments, and messages come next.

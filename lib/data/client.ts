@@ -19,7 +19,7 @@ export function getBrowserClient(): SupabaseClient {
   return browserClient;
 }
 
-export type RealtimeTable = "houses" | "house_buyers" | "audit_log";
+export type RealtimeTable = "houses" | "house_buyers" | "audit_log" | "selections" | "vendor_item_progress" | "sheet_signatures";
 
 export interface TableChange {
   table: RealtimeTable;
