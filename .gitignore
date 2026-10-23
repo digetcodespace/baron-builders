@@ -4,3 +4,13 @@ node_modules/
 .next/
 dist/
 .DS_Store
+
+# next.js
+/out/
+/build
+
+# misc
+*.pem
+*.tsbuildinfo
+.vercel
+npm-debug.log*
