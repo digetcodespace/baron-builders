@@ -106,7 +106,7 @@ export function Calendar({ value, onChange, min, max }: CalendarProps) {
               tabIndex={iso === focusDay ? 0 : -1}
               disabled={off}
               onClick={() => onChange(iso)}
-              className={`relative mx-auto flex aspect-square w-full max-w-9 items-center justify-center rounded-full t-ui transition-[background-color,color,transform] duration-[var(--dur-fast)] hover:bg-ink-soft active:scale-90 disabled:pointer-events-none disabled:opacity-30 ${isSelected ? "bg-primary font-semibold text-on-primary shadow-[var(--shadow-btn)] hover:bg-primary-hover" : ""} ${isToday && !isSelected ? "font-semibold text-primary" : ""}`}
+              className={`relative mx-auto flex aspect-square w-full max-w-9 items-center justify-center rounded-full t-ui transition-[background-color,color,transform,translate,scale,rotate] duration-[var(--dur-fast)] hover:bg-ink-soft active:scale-90 disabled:pointer-events-none disabled:opacity-30 ${isSelected ? "bg-primary font-semibold text-on-primary shadow-[var(--shadow-btn)] hover:bg-primary-hover" : ""} ${isToday && !isSelected ? "font-semibold text-primary" : ""}`}
             >
               {date.getDate()}
               {isToday && !isSelected ? <span aria-hidden="true" className="absolute bottom-1 h-1 w-1 rounded-full bg-primary" /> : null}

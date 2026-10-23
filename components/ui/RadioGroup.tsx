@@ -61,7 +61,7 @@ export function RadioGroup({
             />
             <span
               aria-hidden="true"
-              className="relative mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-n-300 bg-surface shadow-[var(--shadow-inset)] transition-[border-color,box-shadow,transform] duration-[var(--dur-fast)] ease-[var(--ease-out)] group-hover/radio:border-primary-line peer-checked:border-primary peer-focus-visible:shadow-[var(--focus-ring)] peer-active:scale-90 [&>span]:scale-0 peer-checked:[&>span]:scale-100"
+              className="relative mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-n-300 bg-surface shadow-[var(--shadow-inset)] transition-[border-color,box-shadow,transform,translate,scale,rotate] duration-[var(--dur-fast)] ease-[var(--ease-out)] group-hover/radio:border-primary-line peer-checked:border-primary peer-focus-visible:shadow-[var(--focus-ring)] peer-active:scale-90 [&>span]:scale-0 peer-checked:[&>span]:scale-100"
             >
               <span className="h-2.5 w-2.5 rounded-full bg-primary transition-transform duration-[var(--dur-base)] ease-[var(--ease-spring)]" />
             </span>

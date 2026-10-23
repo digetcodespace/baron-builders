@@ -1,6 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
-import { BusyStripes, Face, SURFACE, VARIANT_STYLES, type ButtonVariant } from "./_buttonStyle";
+import { BusyStripes, SURFACE, Spot, VARIANT_STYLES, trackPointer, type ButtonVariant } from "./_buttonStyle";
 import { Icon, type IconName } from "./Icon";
 import { Spinner } from "./Spinner";
 
@@ -9,17 +11,16 @@ export type ButtonSize = "sm" | "md" | "lg";
 
 /** `--btn-slant` is how far the slab leans; padding grows with it so labels stay optically centered. */
 const SIZES: Record<ButtonSize, string> = {
-  sm: "h-8 gap-1.5 px-4 [--btn-slant:6px] text-[length:var(--fs-small)] font-semibold",
-  md: "h-10 gap-2 px-6 [--btn-slant:8px] t-ui",
-  lg: "h-12 gap-2.5 px-8 [--btn-slant:10px] text-[length:var(--fs-body)] font-semibold",
+  sm: "h-8 gap-1.5 px-3.5 [--r-btn:11px] text-[length:var(--fs-small)] font-semibold",
+  md: "h-10 gap-2 px-5 [--r-btn:14px] t-ui",
+  lg: "h-12 gap-2.5 px-7 [--r-btn:17px] text-[length:var(--fs-body)] font-semibold",
 };
 
 /** Cancels the flex gap when the leading slot is empty, so a button never shifts when loading starts. */
 const GAP_PULL: Record<ButtonSize, string> = { sm: "-mr-1.5", md: "-mr-2", lg: "-mr-2.5" };
 
 function classes(variant: ButtonVariant, size: ButtonSize, extra: string) {
-  const v = VARIANT_STYLES[variant];
-  return `${SURFACE} ${v.edge} ${v.text} ${SIZES[size]} ${extra}`;
+  return `${SURFACE} ${VARIANT_STYLES[variant].base} ${SIZES[size]} ${extra}`;
 }
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -32,8 +33,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 /**
- * Text button, cut in the shape of the logo's ground slab. Hover only shifts
- * color, so nothing jumps. Gets no tooltip when its label explains the action;
+ * Text button with a soft squircle shape. Hover shifts color and lets a quiet
+ * glow follow the pointer, so nothing jumps. Gets no tooltip when its label explains the action;
  * wrap it in `<Tooltip>` only to explain a non-obvious consequence, and always
  * when it is conditionally disabled, to say why.
  */
@@ -51,7 +52,7 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const iconSize = size === "sm" ? 16 : 18;
-  const v = VARIANT_STYLES[variant];
+  const spot = VARIANT_STYLES[variant].spot;
   const hasLead = loading || Boolean(leftIcon);
 
   return (
@@ -60,9 +61,10 @@ export function Button({
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       className={classes(variant, size, `${fullWidth ? "w-full" : ""} ${className}`)}
+      onPointerMove={trackPointer}
       {...rest}
     >
-      <Face bordered={v.bordered} className={v.face} />
+      <Spot color={spot} />
       {loading ? <BusyStripes /> : null}
       <span
         aria-hidden="true"
@@ -104,10 +106,10 @@ export function LinkButton({
   ...rest
 }: LinkButtonProps) {
   const iconSize = size === "sm" ? 16 : 18;
-  const v = VARIANT_STYLES[variant];
+  const spot = VARIANT_STYLES[variant].spot;
   return (
-    <Link href={href} className={classes(variant, size, className)} {...rest}>
-      <Face bordered={v.bordered} className={v.face} />
+    <Link href={href} className={classes(variant, size, className)} onPointerMove={trackPointer} {...rest}>
+      <Spot color={spot} />
       {leftIcon ? <Icon name={leftIcon} size={iconSize} /> : null}
       <span>{children}</span>
       {rightIcon ? (

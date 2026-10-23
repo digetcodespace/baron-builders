@@ -40,7 +40,7 @@ export function Tooltip({ content, children, side = "top", className = "" }: Too
       {children}
       <span
         role="tooltip"
-        className={`pointer-events-none absolute z-[var(--z-tooltip)] w-max max-w-64 scale-95 rounded-md bg-ink px-2.5 py-1.5 text-center text-[length:var(--fs-small)] font-medium leading-snug text-on-primary opacity-0 shadow-high transition-[opacity,transform] duration-[var(--dur-base)] ease-[var(--ease-out)] group-focus-within/tip:scale-100 group-focus-within/tip:opacity-100 group-hover/tip:scale-100 group-hover/tip:opacity-100 group-hover/tip:delay-300 ${pos.panel}`}
+        className={`pointer-events-none absolute z-[var(--z-tooltip)] w-max max-w-64 scale-95 rounded-md bg-ink px-2.5 py-1.5 text-center text-[length:var(--fs-small)] font-medium leading-snug text-on-primary opacity-0 shadow-high transition-[opacity,transform,translate,scale,rotate] duration-[var(--dur-base)] ease-[var(--ease-out)] group-focus-within/tip:scale-100 group-focus-within/tip:opacity-100 group-hover/tip:scale-100 group-hover/tip:opacity-100 group-hover/tip:delay-300 ${pos.panel}`}
       >
         {content}
         <span aria-hidden="true" className={`absolute h-2 w-2 rotate-45 bg-ink ${pos.arrow}`} />

@@ -24,7 +24,7 @@ export function MobileTabBar({ items }: { items: NavItem[] }) {
                 className="group/tab relative flex flex-col items-center gap-0.5 py-2.5 transition-colors"
               >
                 <span
-                  className={`flex h-8 w-14 items-center justify-center rounded-full transition-[background-color,transform] duration-[var(--dur-base)] ease-[var(--ease-spring)] ${active ? "bg-primary-soft text-primary" : "text-n-500 group-active/tab:scale-90"}`}
+                  className={`flex h-8 w-14 items-center justify-center rounded-full transition-[background-color,transform,translate,scale,rotate] duration-[var(--dur-base)] ease-[var(--ease-spring)] ${active ? "bg-primary-soft text-primary" : "text-n-500 group-active/tab:scale-90"}`}
                 >
                   <Icon name={item.icon} size={22} />
                 </span>

@@ -80,7 +80,7 @@ export function OptionCardGroup(props: SingleProps | MultipleProps) {
             <label
               key={option.value}
               data-selected={selected || undefined}
-              className={`group/card relative flex cursor-pointer gap-3 rounded-lg border bg-surface p-4 shadow-low transition-[border-color,box-shadow,transform,background-color] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:shadow-high data-[selected]:-translate-y-0.5 data-[selected]:border-primary data-[selected]:bg-primary-soft data-[selected]:shadow-[var(--shadow-high)] has-[:focus-visible]:shadow-[var(--focus-ring)] ${selected ? "" : "border-border"} ${option.disabled ? "pointer-events-none opacity-50" : ""}`}
+              className={`group/card relative flex cursor-pointer gap-3 rounded-lg border bg-surface p-4 shadow-low transition-[border-color,box-shadow,transform,translate,scale,rotate,background-color] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-0.5 hover:shadow-high data-[selected]:-translate-y-0.5 data-[selected]:border-primary data-[selected]:bg-primary-soft data-[selected]:shadow-[var(--shadow-high)] has-[:focus-visible]:shadow-[var(--focus-ring)] ${selected ? "" : "border-border"} ${option.disabled ? "pointer-events-none opacity-50" : ""}`}
             >
               <input
                 type={multiple ? "checkbox" : "radio"}

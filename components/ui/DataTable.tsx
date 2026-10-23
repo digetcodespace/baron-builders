@@ -105,7 +105,7 @@ export function DataTable<T>({
                         <Icon
                           name="chevron-up"
                           size={14}
-                          className={`transition-[transform,opacity] duration-[var(--dur-base)] ease-[var(--ease-spring)] ${active ? "opacity-100" : "opacity-0 group-hover/sort:opacity-40"} ${active && sort.direction === "desc" ? "rotate-180" : ""}`}
+                          className={`transition-[transform,translate,scale,rotate,opacity] duration-[var(--dur-base)] ease-[var(--ease-spring)] ${active ? "opacity-100" : "opacity-0 group-hover/sort:opacity-40"} ${active && sort.direction === "desc" ? "rotate-180" : ""}`}
                         />
                       </button>
                     ) : (

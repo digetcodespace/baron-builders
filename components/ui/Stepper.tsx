@@ -48,7 +48,7 @@ export function Stepper({ steps, current, orientation = "horizontal", className 
               </span>
             ) : null}
             <span
-              className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 font-display text-[length:var(--fs-small)] font-extrabold transition-[background-color,border-color,color,transform] duration-[var(--dur-base)] ease-[var(--ease-spring)] ${
+              className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 font-display text-[length:var(--fs-small)] font-extrabold transition-[background-color,border-color,color,transform,translate,scale,rotate] duration-[var(--dur-base)] ease-[var(--ease-spring)] ${
                 done
                   ? "border-primary bg-primary text-on-primary"
                   : active

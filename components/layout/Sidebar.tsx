@@ -43,7 +43,7 @@ export function Sidebar({ items, homeHref }: { items: NavItem[]; homeHref: strin
         {marker ? (
           <span
             aria-hidden="true"
-            className="absolute left-0 top-0 w-1 rounded-r-full bg-primary transition-[transform,height] duration-[var(--dur-slow)] ease-[var(--ease-out)]"
+            className="absolute left-0 top-0 w-1 rounded-r-full bg-primary transition-[transform,translate,scale,rotate,height] duration-[var(--dur-slow)] ease-[var(--ease-out)]"
             style={{ transform: `translateY(${marker.top}px)`, height: marker.height }}
           />
         ) : null}

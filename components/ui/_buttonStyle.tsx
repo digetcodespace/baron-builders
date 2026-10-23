@@ -1,58 +1,59 @@
+import type { PointerEvent } from "react";
+
 export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "ink";
 
 /**
- * Baron buttons are not rounded rectangles. Their silhouette is the logo's
- * ground slab: a parallelogram leaning right. `--btn-slant` sets the lean.
+ * Per-variant look. `spot` is the soft glow that follows the pointer across the
+ * button on hover: quiet enough not to stand out on the page, distinctive
+ * enough that a Baron button never feels like a template.
  */
-export const SLAB_SHAPE = "[clip-path:polygon(var(--btn-slant)_0,100%_0,calc(100%-var(--btn-slant))_100%,0_100%)]";
-
-/**
- * `edge` is the 1px outline color (the button itself); `face` fills the inside.
- * Borderless variants have no `edge` and the face fills the whole shape.
- * Color is the only thing that changes on hover: no lift, no glow, no jump.
- */
-export const VARIANT_STYLES: Record<ButtonVariant, { edge: string; face: string; text: string; bordered: boolean }> = {
+export const VARIANT_STYLES: Record<ButtonVariant, { base: string; spot: string }> = {
   primary: {
-    edge: "bg-transparent",
-    face: "bg-primary group-hover/btn:bg-primary-hover group-active/btn:bg-primary-deep",
-    text: "text-on-primary",
-    bordered: false,
+    base: "bg-primary text-on-primary hover:bg-primary-hover active:bg-primary-deep",
+    spot: "var(--spot-light)",
   },
   ink: {
-    edge: "bg-transparent",
-    face: "bg-ink group-hover/btn:bg-n-700 group-active/btn:bg-n-800",
-    text: "text-on-primary",
-    bordered: false,
+    base: "bg-ink text-on-primary hover:bg-n-800 active:bg-n-700",
+    spot: "var(--spot-light)",
   },
   secondary: {
-    edge: "bg-border group-hover/btn:bg-n-300",
-    face: "bg-surface group-hover/btn:bg-n-50 group-active/btn:bg-n-100",
-    text: "text-text",
-    bordered: true,
+    base: "border border-border bg-surface text-text hover:border-n-300 hover:bg-n-50 active:bg-n-100",
+    spot: "var(--spot-brand)",
   },
   ghost: {
-    edge: "bg-transparent",
-    face: "bg-transparent group-hover/btn:bg-ink-soft group-active/btn:bg-n-100",
-    text: "text-text",
-    bordered: false,
+    base: "bg-transparent text-text hover:bg-ink-soft active:bg-n-100",
+    spot: "var(--spot-dark)",
   },
   danger: {
-    edge: "bg-primary-line group-hover/btn:bg-bad",
-    face: "bg-bad-bg group-hover/btn:bg-bad group-active/btn:bg-primary-hover",
-    text: "text-bad hover:text-on-primary",
-    bordered: true,
+    base: "border border-primary-line bg-bad-bg text-bad hover:border-bad hover:bg-bad hover:text-on-primary active:bg-primary-hover",
+    spot: "var(--spot-light)",
   },
 };
 
-/** Shared by every button: slab silhouette, color-only hover, a barely-there press. */
-export const SURFACE = `group/btn relative isolate inline-flex select-none items-center justify-center whitespace-nowrap outline-none transition-[transform,color,background-color] duration-[var(--dur-base)] ease-[var(--ease-out)] active:scale-[.985] active:duration-[var(--dur-fast)] disabled:pointer-events-none disabled:opacity-50 ${SLAB_SHAPE}`;
+/**
+ * Shared by every button. The corner is a soft "squircle" (a superellipse, in
+ * browsers that support `corner-shape`; a plain large radius elsewhere) with a
+ * radius of 14px instead of the usual 6-8px. Hover shifts color only, and the
+ * press is a barely-there settle. `translate` and `scale` are listed because
+ * Tailwind 4 animates them as their own properties, not as `transform`.
+ */
+export const SURFACE =
+  "group/btn relative isolate inline-flex select-none items-center justify-center overflow-hidden whitespace-nowrap rounded-[var(--r-btn)] [corner-shape:squircle] transition-[background-color,border-color,color,translate,scale] duration-[var(--dur-base)] ease-[var(--ease-smooth)] active:scale-[.985] active:duration-[var(--dur-fast)] disabled:pointer-events-none disabled:opacity-50";
 
-/** The filled inside of a button. It also draws the keyboard-focus ring, since an outline would be clipped by the shape. */
-export function Face({ bordered, className }: { bordered: boolean; className: string }) {
+/** Point the glow at the cursor. Writes CSS variables directly, so moving the mouse never re-renders React. */
+export function trackPointer(event: PointerEvent<HTMLElement>) {
+  const box = event.currentTarget.getBoundingClientRect();
+  event.currentTarget.style.setProperty("--mx", `${event.clientX - box.left}px`);
+  event.currentTarget.style.setProperty("--my", `${event.clientY - box.top}px`);
+}
+
+/** The glow itself: invisible at rest, eases in under the pointer on hover. */
+export function Spot({ color }: { color: string }) {
   return (
     <span
       aria-hidden="true"
-      className={`pointer-events-none absolute -z-10 transition-[background-color,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-out)] group-focus-visible/btn:shadow-[var(--focus-inset)] ${SLAB_SHAPE} ${bordered ? "inset-px" : "inset-0"} ${className}`}
+      className="pointer-events-none absolute inset-0 -z-10 rounded-[inherit] opacity-0 transition-opacity duration-[var(--dur-slow)] ease-[var(--ease-smooth)] group-hover/btn:opacity-100"
+      style={{ background: `radial-gradient(7.5rem circle at var(--mx, 50%) var(--my, 50%), ${color}, transparent 72%)` }}
     />
   );
 }

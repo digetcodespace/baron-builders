@@ -32,7 +32,7 @@ export function Switch({ label, description, checked, defaultChecked, onChange, 
       >
         <span
           aria-hidden="true"
-          className={`absolute left-0.5 top-0.5 h-5 rounded-full bg-surface shadow-high transition-[transform,width] duration-[var(--dur-base)] ease-[var(--ease-spring)] group-active/switch:w-6 ${on ? "w-5 translate-x-5 group-active/switch:translate-x-4" : "w-5 translate-x-0"}`}
+          className={`absolute left-0.5 top-0.5 h-5 rounded-full bg-surface shadow-high transition-[transform,translate,scale,rotate,width] duration-[var(--dur-base)] ease-[var(--ease-spring)] group-active/switch:w-6 ${on ? "w-5 translate-x-5 group-active/switch:translate-x-4" : "w-5 translate-x-0"}`}
         />
       </button>
       {name ? <input type="hidden" name={name} value={on ? "on" : "off"} /> : null}

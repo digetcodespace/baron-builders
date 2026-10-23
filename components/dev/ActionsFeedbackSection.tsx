@@ -25,7 +25,7 @@ import { Grid, Row, Section, Specimen } from "./GalleryParts";
 export function ActionsSection() {
   const [loading, setLoading] = useState(false);
   return (
-    <Section id="actions" title="Actions" blurb="Buttons are cut in the shape of the logo's ground slab, not a generic rounded rectangle. Hover only shifts color, so nothing jumps. Icons ease forward. Loading shows moving stripes.">
+    <Section id="actions" title="Actions" blurb="Soft squircle corners, a little rounder than the usual rounded rectangle. Hover shifts the color and a faint glow follows your cursor across the button. Nothing lifts or jumps. Icons ease forward. Loading shows moving stripes.">
       <Grid>
         <Specimen name="Button variants">
           <Row>

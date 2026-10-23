@@ -73,7 +73,7 @@ export function NumberStepper({
           bump(delta);
         }
       }}
-      className="flex h-10 w-10 items-center justify-center rounded-md text-text transition-[background-color,transform] duration-[var(--dur-fast)] hover:bg-ink-soft active:scale-90 disabled:pointer-events-none disabled:opacity-30"
+      className="flex h-10 w-10 items-center justify-center rounded-md text-text transition-[background-color,transform,translate,scale,rotate] duration-[var(--dur-fast)] hover:bg-ink-soft active:scale-90 disabled:pointer-events-none disabled:opacity-30"
     >
       <Icon name={icon} size={18} />
     </button>

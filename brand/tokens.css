@@ -78,6 +78,10 @@
   --shadow-field-focus:inset 0 1px 2px rgb(16 17 20/.05),0 0 0 4px color-mix(in srgb,var(--primary) 16%,transparent);
   --shadow-field-error:inset 0 1px 2px rgb(16 17 20/.05),0 0 0 4px color-mix(in srgb,var(--bad) 14%,transparent);
   --sheen:linear-gradient(100deg,transparent,rgb(255 255 255/.34),transparent);
+  --spot-light:rgb(255 255 255/.2);
+  --spot-dark:rgb(16 17 20/.055);
+  --spot-brand:color-mix(in srgb,var(--primary) 9%,transparent);
+  --r-btn:14px;
   --ring-soft:color-mix(in srgb,var(--primary) 15%,transparent);
   --ring-soft-bad:color-mix(in srgb,var(--bad) 14%,transparent);
   --focus-inset:inset 0 0 0 2px var(--surface),inset 0 0 0 4px var(--baron-ink);

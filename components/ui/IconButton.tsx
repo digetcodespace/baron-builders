@@ -1,5 +1,7 @@
+"use client";
+
 import type { ButtonHTMLAttributes, ReactNode } from "react";
-import { Face, SURFACE, VARIANT_STYLES } from "./_buttonStyle";
+import { SURFACE, Spot, VARIANT_STYLES, trackPointer } from "./_buttonStyle";
 import { Icon, type IconName } from "./Icon";
 import { Tooltip } from "./Tooltip";
 
@@ -7,9 +9,9 @@ type Variant = "ghost" | "secondary" | "primary" | "ink";
 type Size = "sm" | "md" | "lg";
 
 const SIZES: Record<Size, { box: string; icon: number }> = {
-  sm: { box: "h-8 w-9 [--btn-slant:5px]", icon: 16 },
-  md: { box: "h-10 w-11 [--btn-slant:6px]", icon: 20 },
-  lg: { box: "h-12 w-14 [--btn-slant:7px]", icon: 22 },
+  sm: { box: "h-8 w-8 [--r-btn:11px]", icon: 16 },
+  md: { box: "h-10 w-10 [--r-btn:14px]", icon: 20 },
+  lg: { box: "h-12 w-12 [--r-btn:17px]", icon: 22 },
 };
 
 export interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "title" | "aria-label" | "content"> {
@@ -24,7 +26,7 @@ export interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonEle
   showTooltip?: boolean;
 }
 
-/** Icon-only button in the same slab shape as Button. Carries a branded tooltip by default; never re-wrap it in `<Tooltip>`. */
+/** Icon-only button in the same squircle shape as Button. Carries a branded tooltip by default; never re-wrap it in `<Tooltip>`. */
 export function IconButton({
   label,
   icon,
@@ -41,10 +43,11 @@ export function IconButton({
     <button
       type={type}
       aria-label={label}
-      className={`${SURFACE} ${v.edge} ${v.text} ${SIZES[size].box} ${className}`}
+      className={`${SURFACE} ${v.base} ${SIZES[size].box} ${className}`}
+      onPointerMove={trackPointer}
       {...rest}
     >
-      <Face bordered={v.bordered} className={v.face} />
+      <Spot color={v.spot} />
       <Icon name={icon} size={SIZES[size].icon} />
     </button>
   );

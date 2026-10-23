@@ -98,7 +98,7 @@ export function FieldShell({
           {children}
           <label
             htmlFor={id}
-            className={`pointer-events-none absolute left-4 max-w-[calc(100%-2rem)] origin-left truncate text-muted will-change-transform transition-[transform,color] ${EASE} t-ui ${labelPosition} ${raised ? "text-n-600" : ""} group-data-[focused]/box:text-primary! group-focus-within/box:text-primary! group-data-[invalid]/box:text-bad!`}
+            className={`pointer-events-none absolute left-4 max-w-[calc(100%-2rem)] origin-left truncate text-muted will-change-transform transition-[transform,translate,scale,rotate,color] ${EASE} t-ui ${labelPosition} ${raised ? "text-n-600" : ""} group-data-[focused]/box:text-primary! group-focus-within/box:text-primary! group-data-[invalid]/box:text-bad!`}
           >
             {label}
           </label>

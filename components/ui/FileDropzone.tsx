@@ -101,7 +101,7 @@ export function FileDropzone({
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
         data-dragging={dragging || undefined}
-        className={`relative flex cursor-pointer flex-col items-center rounded-lg border border-dashed bg-surface px-6 py-8 text-center transition-[background-color,border-color,transform] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:border-primary-line hover:bg-primary-soft data-[dragging]:scale-[1.01] data-[dragging]:border-transparent data-[dragging]:bg-primary-soft ${shownError ? "border-bad" : "border-n-300"} ${disabled ? "pointer-events-none opacity-50" : ""}`}
+        className={`relative flex cursor-pointer flex-col items-center rounded-lg border border-dashed bg-surface px-6 py-8 text-center transition-[background-color,border-color,transform,translate,scale,rotate] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:border-primary-line hover:bg-primary-soft data-[dragging]:scale-[1.01] data-[dragging]:border-transparent data-[dragging]:bg-primary-soft ${shownError ? "border-bad" : "border-n-300"} ${disabled ? "pointer-events-none opacity-50" : ""}`}
       >
         {dragging ? <span aria-hidden="true" className="march-border pointer-events-none absolute inset-0 animate-march rounded-lg" /> : null}
         <span

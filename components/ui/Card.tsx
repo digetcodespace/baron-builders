@@ -12,7 +12,7 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 export function Card({ interactive = false, flat = false, padded = true, className = "", children, ...rest }: CardProps) {
   return (
     <div
-      className={`rounded-lg border border-border bg-surface transition-[box-shadow,transform,border-color] duration-[var(--dur-base)] ease-[var(--ease-out)] ${flat ? "" : "shadow-low"} ${interactive ? "cursor-pointer hover:-translate-y-0.5 hover:border-primary-line hover:shadow-high active:translate-y-0" : ""} ${padded ? "p-5" : ""} ${className}`}
+      className={`rounded-lg border border-border bg-surface transition-[box-shadow,transform,translate,scale,rotate,border-color] duration-[var(--dur-base)] ease-[var(--ease-out)] ${flat ? "" : "shadow-low"} ${interactive ? "cursor-pointer hover:-translate-y-0.5 hover:border-primary-line hover:shadow-high active:translate-y-0" : ""} ${padded ? "p-5" : ""} ${className}`}
       {...rest}
     >
       {children}
