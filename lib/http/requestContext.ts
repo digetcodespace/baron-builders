@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { createUserClient, getProfile, type CookieAdapter } from "@/lib/data";
+import { createUserClient, getProfile, type CookieAdapter, type Db, type UserRole } from "@/lib/data";
 import { UnauthorizedError, contextLogError, type RequestContext } from "@/lib/services";
 import { getRequestId } from "./toErrorResponse";
 
@@ -17,6 +17,19 @@ async function nextCookieAdapter(): Promise<CookieAdapter> {
   };
 }
 
+const ROLES: readonly UserRole[] = ["staff", "buyer", "vendor"];
+
+async function resolveRole(db: Db): Promise<UserRole | null> {
+  const { data: claims } = await db.auth.getClaims();
+  const claimed = claims?.claims?.user_role;
+  if (typeof claimed === "string" && (ROLES as readonly string[]).includes(claimed)) {
+    return claimed as UserRole;
+  }
+  const userId = claims?.claims?.sub;
+  if (!userId) return null;
+  return (await getProfile(db, userId))?.role ?? null;
+}
+
 /**
  * Resolve the caller for a route handler or server component. Verifies the
  * session with Supabase (never trusts the cookie alone) and loads the role.
@@ -29,14 +42,16 @@ export async function createRequestContext(req?: Request): Promise<RequestContex
   const { data, error } = await db.auth.getUser();
   if (error || !data.user) throw new UnauthorizedError();
 
-  const profile = await getProfile(db, data.user.id);
-  if (!profile) throw new UnauthorizedError("Your account has no access yet");
+  // The role rides in the signed token (`user_role`, added by the auth hook), so no
+  // database lookup is needed. Tokens issued before the hook existed fall back to it.
+  const role = await resolveRole(db);
+  if (!role) throw new UnauthorizedError("Your account has no access yet");
 
   return {
     requestId,
-    userId: profile.id,
-    role: profile.role,
+    userId: data.user.id,
+    role,
     db,
-    logError: contextLogError(requestId, profile.id),
+    logError: contextLogError(requestId, data.user.id),
   };
 }

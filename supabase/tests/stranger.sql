@@ -192,6 +192,54 @@ insert into results (check_name, expected, actual, passed)
     public.t_try('update public.selections set option_id = null') = 'blocked';
 reset role;
 
+
+-- ---------------------------------------------------------------------------
+-- Role in the token (custom access token hook)
+-- ---------------------------------------------------------------------------
+insert into results (check_name, expected, actual, passed)
+  select 'hook adds user_role=buyer to a buyer''s token', 'buyer',
+    (public.custom_access_token_hook(jsonb_build_object('user_id', 'b0000000-0000-0000-0000-000000000001', 'claims', '{}'::jsonb)) -> 'claims' ->> 'user_role'),
+    (public.custom_access_token_hook(jsonb_build_object('user_id', 'b0000000-0000-0000-0000-000000000001', 'claims', '{}'::jsonb)) -> 'claims' ->> 'user_role') = 'buyer';
+insert into results (check_name, expected, actual, passed)
+  select 'hook adds user_role=vendor to a vendor''s token', 'vendor',
+    (public.custom_access_token_hook(jsonb_build_object('user_id', 'c0000000-0000-0000-0000-000000000001', 'claims', '{}'::jsonb)) -> 'claims' ->> 'user_role'),
+    (public.custom_access_token_hook(jsonb_build_object('user_id', 'c0000000-0000-0000-0000-000000000001', 'claims', '{}'::jsonb)) -> 'claims' ->> 'user_role') = 'vendor';
+insert into results (check_name, expected, actual, passed)
+  select 'hook adds no role for a user with no profile', 'null',
+    coalesce(public.custom_access_token_hook(jsonb_build_object('user_id', 'd0000000-0000-0000-0000-000000000001', 'claims', '{}'::jsonb)) -> 'claims' ->> 'user_role', 'null'),
+    (public.custom_access_token_hook(jsonb_build_object('user_id', 'd0000000-0000-0000-0000-000000000001', 'claims', '{}'::jsonb)) -> 'claims' ->> 'user_role') is null;
+insert into results (check_name, expected, actual, passed)
+  select 'hook keeps the rest of the token intact', 'x',
+    (public.custom_access_token_hook(jsonb_build_object('user_id', 'b0000000-0000-0000-0000-000000000001', 'claims', '{"aal":"x"}'::jsonb)) -> 'claims' ->> 'aal'),
+    (public.custom_access_token_hook(jsonb_build_object('user_id', 'b0000000-0000-0000-0000-000000000001', 'claims', '{"aal":"x"}'::jsonb)) -> 'claims' ->> 'aal') = 'x';
+
+set local role authenticated;
+select pg_temp.as_user('b0000000-0000-0000-0000-000000000001');
+insert into results (check_name, expected, actual, passed)
+  select 'nobody can call the hook from the API', 'blocked',
+    public.t_try('select public.custom_access_token_hook(''{}''::jsonb)'),
+    public.t_try('select public.custom_access_token_hook(''{}''::jsonb)') = 'blocked';
+reset role;
+
+-- A token carrying user_role works for the rules (no profile lookup needed).
+set local role authenticated;
+select set_config('request.jwt.claim.sub', 'a0000000-0000-0000-0000-000000000001', true);
+select set_config('request.jwt.claims', json_build_object('sub', 'a0000000-0000-0000-0000-000000000001', 'role', 'authenticated', 'user_role', 'staff')::text, true);
+insert into results (check_name, expected, actual, passed)
+  select 'a staff token sees every house', '2', public.t_count('select 1 from public.houses')::text, public.t_count('select 1 from public.houses') = 2;
+reset role;
+
+set local role authenticated;
+select set_config('request.jwt.claim.sub', 'b0000000-0000-0000-0000-000000000002', true);
+select set_config('request.jwt.claims', json_build_object('sub', 'b0000000-0000-0000-0000-000000000002', 'role', 'authenticated', 'user_role', 'buyer')::text, true);
+insert into results (check_name, expected, actual, passed)
+  select 'a buyer token still sees only its own house', '1', public.t_count('select 1 from public.houses')::text, public.t_count('select 1 from public.houses') = 1;
+insert into results (check_name, expected, actual, passed)
+  select 'a buyer token cannot create a project', 'blocked',
+    public.t_try('insert into public.projects (name) values (''x'')'),
+    public.t_try('insert into public.projects (name) values (''x'')') = 'blocked';
+reset role;
+
 select n, check_name, expected, actual, passed from results order by n;
 
 rollback;

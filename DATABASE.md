@@ -62,6 +62,12 @@ Also adds `vendors.email` and `vendors.phone` (the contact details a buyer sees)
 
 **Status: applied** to the Baron Builders project on 2026-10-22, and the stranger test (`supabase/tests/stranger.sql`, 26 checks) passes against it.
 
+### [20261022000003_role_in_token.sql](supabase/migrations/20261022000003_role_in_token.sql)
+
+`custom_access_token_hook(event)` adds the claim `user_role` to every token Supabase issues. Only `supabase_auth_admin` may execute it. The hook is enabled on the hosted project through `supabase/config.toml` (`[auth.hook.custom_access_token]`, pushed with `supabase config push`). `current_role_name()` now prefers the token claim and falls back to `profiles`. Applied, and covered by the stranger test.
+
+**Config push caution:** `supabase config push` writes every setting the file declares. `config.toml` was aligned to the live project so the push changed only the hook. Run `npx supabase config diff` first, and keep it that way.
+
 ## Planned (next migration)
 
 Invoices and revisions (a change after signing produces a revised invoice or a credit), payments, messages and documents, and reminders.

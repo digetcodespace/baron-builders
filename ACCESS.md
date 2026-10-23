@@ -12,6 +12,10 @@ Who can see and do what. Read this before adding a table, a policy, or an author
 
 A role is set once, in the user's `app_metadata.role` when staff invite them (only the server can write it). The `on_auth_user_created` trigger turns it into a `profiles` row. A user with no role has no profile and no access.
 
+**The role is in the sign-in token.** Supabase runs `custom_access_token_hook` every time it issues or refreshes a token and adds the claim `user_role`. The token is signed by Supabase, so the claim cannot be forged or edited. Row-level security (`current_role_name()`) and the app's request context both read it, with a database lookup only as the fallback for tokens issued before the hook existed.
+
+**Trade-off:** a role change takes effect when the person's token next refreshes (up to `jwt_expiry`, 1 hour). To cut someone off immediately, remove their profile *and* end their sessions with the auth admin API; removing the profile alone leaves a still-valid token working until it expires. Keep the expiry short, and never grant a role without a profile.
+
 ## What each role can see
 
 | Data | Staff | Buyer | Vendor |
@@ -60,4 +64,4 @@ Every access change ships with tests for: a buyer on a different house, a buyer 
 - Vendors read only houses with an open item for their company, the buyers' contact details on those houses, and their own items. They never reach selections, prices, or invoices.
 - Signing goes only through `sign_sheet()` (service role), and signed selections are locked for everyone.
 
-Both migrations are applied, and `npm run db:test` runs the stranger test (26 checks: staff, two buyers, two vendors on different trades, and a user with no profile) against the live database. Invoices, payments, and messages come next.
+Three migrations are applied, and `npm run db:test` runs the stranger test (34 checks: staff, two buyers, two vendors on different trades, and a user with no profile) against the live database. Invoices, payments, and messages come next.

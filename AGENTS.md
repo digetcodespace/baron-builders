@@ -101,6 +101,8 @@ npx supabase db push             # apply
 npm run db:test                  # the stranger test; rolls back, must show 0 failed
 ```
 
+Auth settings live in `supabase/config.toml`; run `npx supabase config diff` and confirm it shows only your change before `npx supabase config push --yes`.
+
 Never edit an applied migration; add a new one. After any schema or policy change, extend `supabase/tests/stranger.sql` and update DATABASE.md and ACCESS.md.
 
 ## Environment
