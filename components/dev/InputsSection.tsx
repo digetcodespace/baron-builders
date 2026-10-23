@@ -5,11 +5,13 @@ import {
   Checkbox,
   CurrencyField,
   DateField,
+  EmailField,
   FileDropzone,
   InfoHint,
   NumberStepper,
   OptionCardGroup,
   OtpField,
+  PhoneField,
   RadioGroup,
   SearchField,
   SegmentedControl,
@@ -36,6 +38,8 @@ export function InputsSection() {
   const [cents, setCents] = useState<number | null>(125000);
   const [files, setFiles] = useState<DropzoneFile[]>([]);
   const [checked, setChecked] = useState(true);
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
 
   return (
     <Section
@@ -47,9 +51,9 @@ export function InputsSection() {
         <Specimen name="Text field" note="label floats, slab draws on focus">
           <div className="space-y-4">
             <TextField label="Full name" defaultValue="Maria Hernandez" />
-            <TextField label="Email" type="email" leadingIcon="mail" hint="We send selection reminders here." />
+            <EmailField label="Email" value={email} onChange={setEmail} hint="We send selection reminders here." />
             <TextField label="Lot size" suffix="sq ft" inputMode="numeric" />
-            <TextField label="Phone" leadingIcon="phone" error="Enter a 10-digit phone number." defaultValue="555-01" />
+            <PhoneField label="Phone" value={phone} onChange={setPhone} hint={phone ? `Saved as ${phone}` : "Type any way you like; it formats as you go."} />
             <TextField label="Locked field" disabled defaultValue="Beaver Crossing" />
           </div>
         </Specimen>

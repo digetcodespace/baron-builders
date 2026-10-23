@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
-import { Button, IconButton, OtpField, TextField } from "@/components/ui";
+import { Button, EmailField, IconButton, OtpField } from "@/components/ui";
 import { AUTH_OTP_LENGTH } from "@/lib/config";
 import { useSignIn } from "@/hooks/useSignIn";
 import { PERSONAS, type Persona } from "./personas";
@@ -64,17 +64,7 @@ export function SignInForm({ initialEmail = "", persona = "default" }: { initial
             <p className="mt-2 t-body">We will email you a code.</p>
           </Reveal>
           <Reveal show={!onCode} order={1} className="mt-8">
-            <TextField
-              label="Email address"
-              type="email"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              leadingIcon="mail"
-              value={draft}
-              error={emailError}
-              onChange={(event) => setDraft(event.target.value)}
-            />
+            <EmailField label="Email address" name="email" autoFocus value={draft} error={emailError} onChange={setDraft} />
           </Reveal>
           <Reveal show={!onCode} order={2} className="mt-5">
             <Button type="submit" size="lg" fullWidth loading={busy && !onCode} rightIcon="arrow-right">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Button, IconButton, Modal, SegmentedControl, SelectField, TextField, EmptyState } from "@/components/ui";
+import { Button, EmailField, EmptyState, IconButton, Modal, SegmentedControl, SelectField, TextField } from "@/components/ui";
 import { useToast } from "@/components/providers";
 import { useInvite, useInviteTargets, type InviteOutcome } from "@/hooks/useInvite";
 
@@ -137,14 +137,7 @@ export function InviteDialog({ open, onClose, onInvited }: InviteDialogProps) {
           <p className="mt-2 t-small">{ROLE_HELP[role]}</p>
         </div>
         <TextField label="Full name" value={fullName} error={fieldErrors.fullName} onChange={(e) => setFullName(e.target.value)} data-autofocus />
-        <TextField
-          label="Email address"
-          type="email"
-          leadingIcon="mail"
-          value={email}
-          error={fieldErrors.email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <EmailField label="Email address" value={email} error={fieldErrors.email} onChange={setEmail} />
         {role === "buyer" ? (
           houseOptions.length === 0 && !targets.loading ? (
             <EmptyState icon="home" title="No houses yet" />
