@@ -16,13 +16,20 @@ export function isActivePath(pathname: string, href: string) {
   return pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
 }
 
+/** The one nav item the current page belongs to: the most specific match, so /staff/people is People, not Dashboard. */
+export function activeHrefFor(pathname: string, items: NavItem[]): string | undefined {
+  return items
+    .filter((item) => isActivePath(pathname, item.href))
+    .sort((a, b) => b.href.length - a.href.length)[0]?.href;
+}
+
 /** Staff navigation rail. Collapses to icons; a soft pill slides to the current page. */
 export function Sidebar({ items, homeHref }: { items: NavItem[]; homeHref: string }) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const refs = useRef<Record<string, HTMLAnchorElement | null>>({});
   const [marker, setMarker] = useState<{ top: number; height: number } | null>(null);
-  const activeHref = items.find((i) => isActivePath(pathname, i.href))?.href;
+  const activeHref = activeHrefFor(pathname, items);
 
   useLayoutEffect(() => {
     const el = activeHref ? refs.current[activeHref] : null;

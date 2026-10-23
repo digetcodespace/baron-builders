@@ -68,6 +68,10 @@ Also adds `vendors.email` and `vendors.phone` (the contact details a buyer sees)
 
 **Config push caution:** `supabase config push` writes every setting the file declares. `config.toml` was aligned to the live project so the push changed only the hook. Run `npx supabase config diff` first, and keep it that way.
 
+### [20261023000001_profile_on_role_change.sql](supabase/migrations/20261023000001_profile_on_role_change.sql)
+
+Supabase Auth inserts a new user first and attaches `app_metadata` (where the role lives) in a second step, so a trigger that only ran on INSERT never saw the role and invited people got an account with no profile. `handle_new_user()` now runs on **insert or update of `raw_app_meta_data` / `raw_user_meta_data`** and upserts the profile, keeping role, email, and name in step with the account. Covered by the stranger test (the profile appears the moment a role is attached).
+
 ## Planned (next migration)
 
 Invoices and revisions (a change after signing produces a revised invoice or a credit), payments, messages and documents, and reminders.

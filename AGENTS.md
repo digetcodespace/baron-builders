@@ -115,6 +115,19 @@ scripts/checks/            The structural checks and their allowlists
 5. **Route:** `app/api/<thing>/route.ts` (copy `app/api/houses/route.ts`).
 6. **UI:** a hook in `hooks/` (use `usePaginatedList` for lists, `useApiErrorHandler` for errors), a component in `components/<thing>/`, a page that prefetches the first page.
 
+## Sign-in and invites: what is configured, and what is still needed
+
+Built and verified end to end (`npm run test:e2e:auth`, 28 checks against the live project): the sign-in page, emailed one-time codes, sign-out, role-in-token redirects, the People page, and invitations for staff, buyers (tied to a house), and vendors (tied to a company).
+
+| Setting | Where | Status |
+| --- | --- | --- |
+| Public sign-up off, site URL, redirect URLs | `supabase/config.toml`, pushed with `npx supabase config push` | Done |
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SITE_URL` | Vercel (Production) | Done |
+| `SUPABASE_SERVICE_ROLE_KEY` | Vercel and local `.env.local` | **Needed for invites.** Sign-in does not need it |
+| `RESEND_API_KEY`, `EMAIL_FROM` (a verified sending address) | Vercel and local `.env.local` | **Needed to email invitations.** Without them an invite shows a sign-in link to share |
+| Custom SMTP (Resend) plus the branded code email | `[auth.smtp]` and `[auth.email.template.magic_link]` in `config.toml` | **Needed before codes can reach real inboxes.** Supabase's built-in mailer sends only the default link email, only to team members, and allows 2 emails an hour. The template is ready in `supabase/templates/magic_link.html`; Supabase refuses a custom template until SMTP is configured |
+| First staff account | `npm run create-staff -- you@company.com "Your Name"` | Run once |
+
 ## Database migrations
 
 Agents run migrations themselves, through the Supabase CLI. The project is linked to **Baron Builders** (`syxcjsjquxvqqyxtxvme`).

@@ -4,3 +4,4 @@
 lib/services/_context.ts   # defines getServiceSupabase, the only door
 lib/services/audit.ts      # no-user-write-policy: audit_log has no authenticated write policy by design
 lib/data/_supabase.ts      # defines createAdminClient, reached only through getServiceSupabase
+lib/services/invites.ts    # auth-admin: creating accounts with a server-set role

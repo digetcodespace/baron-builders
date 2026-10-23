@@ -240,6 +240,22 @@ insert into results (check_name, expected, actual, passed)
     public.t_try('insert into public.projects (name) values (''x'')') = 'blocked';
 reset role;
 
+
+-- ---------------------------------------------------------------------------
+-- Supabase Auth creates an account first and attaches the role afterwards.
+-- ---------------------------------------------------------------------------
+insert into auth.users (id, email, raw_app_meta_data)
+  values ('f0000000-0000-0000-0000-000000000001', 'late-role@test.invalid', '{}');
+insert into results (check_name, expected, actual, passed)
+  select 'an account with no role has no profile', '0',
+    (select count(*) from public.profiles where id = 'f0000000-0000-0000-0000-000000000001')::text,
+    (select count(*) from public.profiles where id = 'f0000000-0000-0000-0000-000000000001') = 0;
+update auth.users set raw_app_meta_data = '{"role":"buyer"}' where id = 'f0000000-0000-0000-0000-000000000001';
+insert into results (check_name, expected, actual, passed)
+  select 'the profile appears the moment a role is attached', 'buyer',
+    (select role::text from public.profiles where id = 'f0000000-0000-0000-0000-000000000001'),
+    (select role::text from public.profiles where id = 'f0000000-0000-0000-0000-000000000001') = 'buyer';
+
 select n, check_name, expected, actual, passed from results order by n;
 
 rollback;

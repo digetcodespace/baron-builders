@@ -1,13 +1,26 @@
 import { createAdminClient, type Db, type UserRole } from "@/lib/data";
 import { logError } from "@/lib/observability";
 
-/** Everything a service needs about the caller. Built once per request by the HTTP layer. */
+/** Everything a service needs about a signed-in caller. Built once per request by the HTTP layer. */
 export interface RequestContext {
   requestId: string;
   userId: string;
   role: UserRole;
   /** JWT-scoped client. RLS is the authorization model; trust it. */
   db: Db;
+  /** Public address of the site, for links in emails. */
+  siteUrl: string;
+  logError: (error: unknown, extra?: Record<string, unknown>) => void;
+}
+
+/**
+ * What a service gets before anyone has signed in (requesting or entering a
+ * code). There is no user, so rate limits key on the email and the caller's IP.
+ */
+export interface PublicContext {
+  requestId: string;
+  db: Db;
+  ip: string;
   logError: (error: unknown, extra?: Record<string, unknown>) => void;
 }
 
@@ -18,7 +31,7 @@ export interface RequestContext {
  *
  *  - webhook:             inbound provider callbacks (payments, email replies); no user session
  *  - scheduled-job:       reminders and other cron work; no user session
- *  - auth-admin:          inviting users and setting app_metadata roles (Supabase auth-admin API)
+ *  - auth-admin:          creating accounts and setting app_metadata roles (invites)
  *  - storage-signing:     signing private-bucket URLs for documents and PDFs
  *  - no-user-write-policy: tables with no authenticated write policy by design (audit_log)
  */

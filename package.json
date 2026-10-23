@@ -17,7 +17,9 @@
     "check:spelling": "node scripts/checks/spelling.mjs",
     "check:ci": "npm run check && npm run typecheck && npm run lint && npm run build",
     "db:push": "supabase db push",
-    "db:test": "supabase db query --linked -f supabase/tests/stranger.sql"
+    "db:test": "supabase db query --linked -f supabase/tests/stranger.sql",
+    "create-staff": "node scripts/create-staff.mjs",
+    "test:e2e:auth": "node scripts/e2e/auth.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

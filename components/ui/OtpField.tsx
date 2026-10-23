@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type ClipboardEvent, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type ClipboardEvent, type KeyboardEvent } from "react";
 import { FieldFrame } from "./_FieldFrame";
 import { FieldError } from "./FieldError";
 
@@ -12,6 +12,8 @@ export interface OtpFieldProps {
   onChange?: (code: string) => void;
   error?: string | null;
   disabled?: boolean;
+  /** Focus the first box when it appears. */
+  autoFocus?: boolean;
   className?: string;
 }
 
@@ -23,11 +25,15 @@ export function OtpField({
   onChange,
   error,
   disabled,
+  autoFocus = false,
   className = "",
 }: OtpFieldProps) {
   const [digits, setDigits] = useState<string[]>(() => Array.from({ length }, () => ""));
   const [focusIndex, setFocusIndex] = useState<number | null>(null);
   const refs = useRef<(HTMLInputElement | null)[]>([]);
+  useEffect(() => {
+    if (autoFocus) refs.current[0]?.focus();
+  }, [autoFocus]);
 
   const commit = (next: string[]) => {
     setDigits(next);

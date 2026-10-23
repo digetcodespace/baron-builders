@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import { serverEnv } from "@/lib/config";
+import { emailEnv, isEmailConfigured } from "@/lib/config";
 
 export interface OutboundEmail {
   to: string | string[];
@@ -17,7 +17,7 @@ export interface EmailProvider {
 
 class ResendProvider implements EmailProvider {
   async send(message: OutboundEmail): Promise<{ id: string }> {
-    const env = serverEnv();
+    const env = emailEnv();
     const resend = new Resend(env.RESEND_API_KEY);
     const { data, error } = await resend.emails.send({
       from: env.EMAIL_FROM,
@@ -31,6 +31,11 @@ class ResendProvider implements EmailProvider {
     if (error || !data) throw new Error(error?.message ?? "Email provider returned no id");
     return { id: data.id };
   }
+}
+
+/** True when Resend credentials are present, so callers can degrade (share a link) instead of failing. */
+export function isEmailAvailable(): boolean {
+  return isEmailConfigured();
 }
 
 export function getEmailProvider(): EmailProvider {

@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "@/components/ui";
-import { isActivePath, type NavItem } from "./Sidebar";
+import { activeHrefFor, type NavItem } from "./Sidebar";
 
 /** Bottom navigation for phones (buyers and vendors use the portal on their phones). */
 export function MobileTabBar({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
+  const activeHref = activeHrefFor(pathname, items);
   return (
     <nav
       aria-label="Main"
@@ -15,7 +16,7 @@ export function MobileTabBar({ items }: { items: NavItem[] }) {
     >
       <ul className="mx-auto flex max-w-md items-stretch justify-around px-2">
         {items.map((item) => {
-          const active = isActivePath(pathname, item.href);
+          const active = item.href === activeHref;
           return (
             <li key={item.href} className="flex-1">
               <Link

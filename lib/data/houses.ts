@@ -43,3 +43,11 @@ export async function isHouseBuyer(db: Db, houseId: string, userId: string): Pro
   if (error) throw toDataError(error, "house buyer");
   return (count ?? 0) > 0;
 }
+
+/** Link a buyer to their house. Idempotent. */
+export async function addHouseBuyer(db: Db, houseId: string, userId: string): Promise<void> {
+  const { error } = await db
+    .from("house_buyers")
+    .upsert({ house_id: houseId, user_id: userId }, { onConflict: "house_id,user_id", ignoreDuplicates: true });
+  if (error) throw toDataError(error, "house buyer");
+}

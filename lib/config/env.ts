@@ -18,15 +18,14 @@ const publicSchema = z.object({
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
 });
 
-const serverSchema = z.object({
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
-  RESEND_API_KEY: z.string().min(1),
-  EMAIL_FROM: z.string().min(1),
-  CRON_SECRET: z.string().min(16),
-});
+// Each secret group is validated on its own, so a feature only needs the keys it uses:
+// sign-in needs none of these, invites need the service key, invite emails need Resend.
+const serviceSchema = z.object({ SUPABASE_SERVICE_ROLE_KEY: z.string().min(1) });
+const emailSchema = z.object({ RESEND_API_KEY: z.string().min(1), EMAIL_FROM: z.string().min(1) });
+const cronSchema = z.object({ CRON_SECRET: z.string().min(16) });
 
 export type PublicEnv = z.infer<typeof publicSchema>;
-export type ServerEnv = z.infer<typeof serverSchema>;
+export type EmailEnv = z.infer<typeof emailSchema>;
 
 function parseOrConfigError<T>(schema: z.ZodType<T>, raw: unknown, label: string): T {
   const result = schema.safeParse(raw);
@@ -51,12 +50,19 @@ export function publicEnv(): PublicEnv {
   return cachedPublic;
 }
 
-let cachedServer: ServerEnv | undefined;
+/** The RLS-bypassing key. Server only; reachable only through `getServiceSupabase()`. */
+export function supabaseServiceKey(): string {
+  return parseOrConfigError(serviceSchema, process.env, "Supabase service").SUPABASE_SERVICE_ROLE_KEY;
+}
 
-/** Server-only secrets. Never import this from a client component. */
-export function serverEnv(): ServerEnv {
-  cachedServer ??= parseOrConfigError(serverSchema, process.env, "server");
-  return cachedServer;
+/** Resend credentials for outbound email. */
+export function emailEnv(): EmailEnv {
+  return parseOrConfigError(emailSchema, process.env, "email");
+}
+
+/** Shared secret that gates cron endpoints. */
+export function cronSecret(): string {
+  return parseOrConfigError(cronSchema, process.env, "cron").CRON_SECRET;
 }
 
 /** True when Supabase is configured, so the app can degrade instead of crashing at boot. */
@@ -66,4 +72,9 @@ export function isSupabaseConfigured(): boolean {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
   }).success;
+}
+
+/** True when invite emails can actually be sent. */
+export function isEmailConfigured(): boolean {
+  return emailSchema.safeParse(process.env).success;
 }

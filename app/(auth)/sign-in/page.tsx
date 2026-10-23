@@ -1,16 +1,23 @@
-import Image from "next/image";
+import { redirect } from "next/navigation";
+import { AuthShell } from "@/components/auth/AuthShell";
+import { SignInForm } from "@/components/auth/SignInForm";
+import { isSupabaseConfigured } from "@/lib/config";
+import { PORTAL_HOME, createRequestContext } from "@/lib/http";
 
 export const metadata = { title: "Sign in" };
 
-export default function SignInPage() {
+/** Someone already signed in goes straight to their own portal. */
+export const dynamic = "force-dynamic";
+
+export default async function SignInPage({ searchParams }: { searchParams: Promise<{ email?: string }> }) {
+  if (isSupabaseConfigured()) {
+    const ctx = await createRequestContext().catch(() => null);
+    if (ctx) redirect(PORTAL_HOME[ctx.role]);
+  }
+  const { email } = await searchParams;
   return (
-    <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-6 p-6">
-      <Image src="/brand/baron-logo.svg" alt="Baron Builders" width={180} height={62} unoptimized priority />
-      <h1 className="t-h3">Sign in</h1>
-      <p className="t-body">
-        Sign-in with an emailed one-time code is not wired up yet. Staff, buyers, and vendors will all sign in on this
-        page and land in their own portal.
-      </p>
-    </div>
+    <AuthShell>
+      <SignInForm initialEmail={typeof email === "string" ? email.slice(0, 254) : ""} />
+    </AuthShell>
   );
 }

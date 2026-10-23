@@ -10,8 +10,13 @@ export {
   ServiceError,
   UnauthorizedError,
 } from "./_errors";
-export { contextLogError, type RequestContext } from "./_context";
+export { contextLogError, type PublicContext, type RequestContext } from "./_context";
 export { assertHouseAccess, assertStaff } from "./access";
 export { recordAudit } from "./audit";
 export { sendHouseEmail } from "./email";
 export { getHouseById, listHouses } from "./houses";
+export { inviteUser } from "./invites";
+export type { InviteResult } from "./invites";
+export { getMyProfile, listPeople } from "./people";
+export { requestSignInCode, signOut, verifySignInCodeForSession } from "./signIn";
+export { listVendors } from "./vendors";

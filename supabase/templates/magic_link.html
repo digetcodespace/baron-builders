@@ -1,0 +1,8 @@
+<!-- Supabase "Magic Link" template, used for emailed one-time sign-in codes. Email clients ignore CSS variables, so colors are literal (they mirror brand/tokens.css). -->
+<div style="font-family:Arial,Helvetica,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;color:#101114">
+  <p style="margin:0 0 24px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#c41e2a;font-weight:700">Baron Builders</p>
+  <h1 style="font-size:24px;line-height:1.25;margin:0 0 12px">Your sign-in code</h1>
+  <p style="font-size:16px;line-height:1.6;margin:0 0 24px;color:#403f3c">Enter this code on the sign-in page to continue.</p>
+  <p style="margin:0 0 24px;padding:20px 16px;text-align:center;font-family:'Courier New',monospace;font-size:34px;font-weight:700;letter-spacing:.28em;background:#f7f6f4;border:1px solid #e2dfda;border-radius:12px">{{ .Token }}</p>
+  <p style="font-size:14px;line-height:1.6;color:#615f5a;margin:0">This code expires in one hour and works once. If you did not ask to sign in, you can ignore this email; nobody can sign in without the code.</p>
+</div>

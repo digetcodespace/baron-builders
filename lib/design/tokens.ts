@@ -79,3 +79,14 @@ export const space = {
   7: "var(--s-7)",
   8: "var(--s-8)",
 } as const;
+
+/**
+ * Email clients cannot read CSS variables, so email templates need literal
+ * colors. These mirror brand/tokens.css; change them together.
+ */
+export const emailTheme = {
+  ink: "#101114",
+  muted: "#615f5a",
+  primary: "#c41e2a",
+  onPrimary: "#ffffff",
+} as const;

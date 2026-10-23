@@ -11,6 +11,15 @@ export interface ProfileRow {
   created_at: string;
 }
 
+export interface VendorRow {
+  id: string;
+  name: string;
+  trade_id: string;
+  email: string | null;
+  phone: string | null;
+  created_at: string;
+}
+
 export interface ProjectRow {
   id: string;
   name: string;

@@ -16,6 +16,16 @@ A role is set once, in the user's `app_metadata.role` when staff invite them (on
 
 **Trade-off:** a role change takes effect when the person's token next refreshes (up to `jwt_expiry`, 1 hour). To cut someone off immediately, remove their profile *and* end their sessions with the auth admin API; removing the profile alone leaves a still-valid token working until it expires. Keep the expiry short, and never grant a role without a profile.
 
+## Signing in and being invited
+
+- **One sign-in page for everyone** (`/sign-in`). A person enters their email, receives an 8-digit one-time code, and enters it. There is no password. Staff, buyers, and vendors use the same page and land in their own portal.
+- **Accounts exist only by invitation.** Public sign-up is switched off on the Supabase project and `shouldCreateUser` is false on every code request, so a stranger's address never becomes an account. The first staff account is created with `npm run create-staff`; after that, staff invite everyone else from the People page (`/staff/people`).
+- **An invitation sets the role on the server** (`app_metadata.role`, which only the server can write) and links the person to what they belong to: a buyer to one house, a vendor person to their company. Inviting an email that already has a different role is refused; roles are never changed by inviting.
+- **Asking for a code never reveals who has an account.** The answer is the same for a registered address and a stranger's. Codes and attempts are rate limited per email and IP (5 requests and 10 attempts per 10 minutes).
+- **Redirects happen at the gate.** The proxy reads the role from the signed token: a signed-out visitor is sent to sign-in, a person in the wrong portal is sent to their own, and a signed-in person who opens sign-in is sent home, all as instant redirects. Each portal layout checks the role again, so the proxy is a convenience and a first gate, never the only one.
+- **State-changing requests must come from this site** (`Origin` is checked), and the API uses the same error pipeline as everything else.
+- **Revoking access:** delete the person's account (their token stays valid until it expires, up to an hour). Changing a role is a deliberate server action, not an invitation.
+
 ## What each role can see
 
 | Data | Staff | Buyer | Vendor |

@@ -2,13 +2,8 @@ import { redirect } from "next/navigation";
 import { isSupabaseConfigured } from "@/lib/config";
 import type { UserRole } from "@/lib/data";
 import { UnauthorizedError, type RequestContext } from "@/lib/services";
+import { PORTAL_HOME } from "./portals";
 import { createRequestContext } from "./requestContext";
-
-export const PORTAL_HOME: Record<UserRole, string> = {
-  staff: "/staff",
-  buyer: "/buyer",
-  vendor: "/vendor",
-};
 
 /** Send the visitor to their own portal, or to sign-in if they have no session. */
 export async function redirectToPortal(): Promise<never> {

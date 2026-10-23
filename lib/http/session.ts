@@ -1,13 +1,17 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { isSupabaseConfigured } from "@/lib/config";
-import { createUserClient } from "@/lib/data";
+import { createUserClient, type UserRole } from "@/lib/data";
+import { PORTAL_HOME, portalRoleForPath } from "./portals";
 
-const PROTECTED_PREFIXES = ["/staff", "/buyer", "/vendor"];
+const ROLES: readonly string[] = ["staff", "buyer", "vendor"];
 
 /**
- * Called by `proxy.ts` on every request: refreshes the Supabase session cookie
- * and sends signed-out visitors away from the portals. Role checks happen in
- * each portal layout (`requirePortalRole`), not here.
+ * Called by `proxy.ts` on every request. Refreshes the Supabase session cookie
+ * and does the cheap, instant part of access control from the signed token:
+ * signed-out visitors go to sign-in, and a person in the wrong portal (or on
+ * sign-in while already signed in) is redirected to their own home. The page
+ * layouts still check the role again (`requirePortalRole`), so this is a
+ * convenience and a first gate, never the only one.
  */
 export async function updateSession(request: NextRequest): Promise<NextResponse> {
   let response = NextResponse.next({ request });
@@ -24,13 +28,26 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
 
   const { data } = await db.auth.getUser();
   const path = request.nextUrl.pathname;
-  const isProtected = PROTECTED_PREFIXES.some((p) => path === p || path.startsWith(`${p}/`));
+  const portalRole = portalRoleForPath(path);
 
-  if (isProtected && !data.user) {
+  const redirectTo = (target: string) => {
     const url = request.nextUrl.clone();
-    url.pathname = "/sign-in";
+    url.pathname = target;
     url.search = "";
-    return NextResponse.redirect(url);
-  }
+    const redirect = NextResponse.redirect(url);
+    // Keep any refreshed session cookies on the redirect too.
+    for (const cookie of response.cookies.getAll()) redirect.cookies.set(cookie);
+    return redirect;
+  };
+
+  if (!data.user) return portalRole ? redirectTo("/sign-in") : response;
+
+  const { data: claims } = await db.auth.getClaims();
+  const claimed = claims?.claims?.user_role;
+  const role = typeof claimed === "string" && ROLES.includes(claimed) ? (claimed as UserRole) : null;
+  if (!role) return response; // Older token without the claim: the page layouts decide.
+
+  if (portalRole && portalRole !== role) return redirectTo(PORTAL_HOME[role]);
+  if (path === "/sign-in") return redirectTo(PORTAL_HOME[role]);
   return response;
 }
