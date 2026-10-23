@@ -75,6 +75,15 @@ Baron Builders is one company; the access boundary is the **role plus the house*
 - Signed sheets are locked: prices freeze for that buyer once signed. A change after signing is a new revision (revised invoice or credit), never an edit in place.
 - Record keeping: every choice, signature, change, email, and payment is saved with who and when. Writes go through the service layer so the audit row can't be skipped.
 
+## Database changes
+
+Whenever the database needs to change (tables, columns, policies, functions, indexes, seed data), it goes through the **Supabase CLI**, as a migration file committed to the repo.
+
+- Create it with `supabase migration new <name>`; the SQL lives in `supabase/migrations/`.
+- Test it locally with `supabase db reset`; apply it to the linked project with `supabase db push`.
+- Never give the user SQL to run in the dashboard SQL editor, and never change schema by hand in the dashboard. If the dashboard and the migrations drift, the migrations are the truth.
+- Regenerate types with `supabase gen types typescript` after a schema change, then update `DATABASE.md` (see "Before writing anything").
+
 ## Database clients
 
 - One browser singleton for client-side reads and realtime. Never construct another.
@@ -157,7 +166,7 @@ Every service function that accepts user input calls `parseOrThrow(Schema, raw)`
 - No edits to `.env.local`. No secrets in the repo.
 - No `console.log` in merged code; `console.error` for genuine errors only.
 - No backwards-compatibility shims for code you replace in the same change.
-- When surfacing SQL migration files to run, render each filename as a markdown link to its relative path, never a bare name.
+- No SQL for the user to paste into the Supabase dashboard SQL editor. No schema changes made in the dashboard. Every database change goes through the Supabase CLI (see "Database changes").
 
 ## When the rules and the code disagree
 
