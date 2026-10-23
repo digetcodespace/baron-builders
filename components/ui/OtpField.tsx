@@ -8,6 +8,8 @@ export interface OtpFieldProps {
   /** Number of digits. Must match the Supabase project's one-time-code length. */
   length?: number;
   label?: string;
+  /** Keep the label for screen readers only, when the surrounding heading already says what to enter. */
+  hideLabel?: boolean;
   onComplete: (code: string) => void;
   onChange?: (code: string) => void;
   error?: string | null;
@@ -21,6 +23,7 @@ export interface OtpFieldProps {
 export function OtpField({
   length = 8,
   label = "One-time code",
+  hideLabel = false,
   onComplete,
   onChange,
   error,
@@ -79,7 +82,7 @@ export function OtpField({
 
   return (
     <div className={className}>
-      <p className="mb-2 t-label text-n-600">{label}</p>
+      <p className={hideLabel ? "sr-only" : "mb-2 t-label text-n-600"}>{label}</p>
       <div role="group" aria-label={label} className="flex gap-1.5 sm:gap-2">
         {digits.map((digit, index) => (
           <FieldFrame

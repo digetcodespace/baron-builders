@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
-import { Button, OtpField, TextField } from "@/components/ui";
+import { Button, IconButton, OtpField, TextField } from "@/components/ui";
 import { AUTH_OTP_LENGTH } from "@/lib/config";
 import { useSignIn } from "@/hooks/useSignIn";
 import { PERSONAS, type Persona } from "./personas";
@@ -88,8 +88,11 @@ export function SignInForm({ initialEmail = "", persona = "default" }: { initial
       <div
         inert={!onCode}
         aria-hidden={!onCode}
-        className={`${panel} ${onCode ? "translate-x-0 opacity-100 blur-0" : "pointer-events-none translate-x-10 opacity-0 blur-[4px]"}`}
+        className={`relative ${panel} ${onCode ? "translate-x-0 opacity-100 blur-0" : "pointer-events-none translate-x-10 opacity-0 blur-[4px]"}`}
       >
+        <Reveal show={onCode} order={0} className="absolute bottom-full left-0 mb-5">
+          <IconButton label="Use a different email" icon="arrow-left" variant="ghost" disabled={busy} onClick={backToEmail} />
+        </Reveal>
         <Reveal show={onCode} order={0}>
           <h2 className="t-h1">Enter your code</h2>
           <p className="mt-2 t-body">
@@ -101,18 +104,16 @@ export function SignInForm({ initialEmail = "", persona = "default" }: { initial
             key={attempt}
             length={AUTH_OTP_LENGTH}
             label="Code"
+            hideLabel
             error={codeError}
             disabled={busy}
             autoFocus={onCode}
             onComplete={(code) => void verify(code)}
           />
         </Reveal>
-        <Reveal show={onCode} order={2} className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1">
-          <Button variant="primary" size="sm" disabled={cooldown > 0 || busy} onClick={() => void requestCode(email)}>
-            {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend code"}
-          </Button>
-          <Button variant="ghost" size="sm" disabled={busy} onClick={backToEmail}>
-            Change email
+        <Reveal show={onCode} order={2} className="mt-5">
+          <Button variant="ghost" size="sm" className="-ml-3 text-n-600" disabled={cooldown > 0 || busy} onClick={() => void requestCode(email)}>
+            {cooldown > 0 ? `Resend code in ${cooldown}s` : "Resend code"}
           </Button>
         </Reveal>
       </div>
