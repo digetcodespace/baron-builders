@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, type ReactNode } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
 import { useControllable } from "./_hooks";
 import { FieldError } from "./FieldError";
 
@@ -23,7 +23,11 @@ export interface RadioGroupProps {
   className?: string;
 }
 
-/** A set of exclusive choices. Native radios underneath, so arrow keys and forms work. */
+/**
+ * A set of exclusive choices. Native radios underneath, so arrow keys and forms
+ * work. The dot grows from the center with a spring and a ring bursts off the
+ * edge once; neither plays on first render.
+ */
 export function RadioGroup({
   legend,
   options,
@@ -40,15 +44,20 @@ export function RadioGroup({
   const [selected, setSelected] = useControllable<string | null>(value, defaultValue ?? null, (v) => {
     if (v !== null) onChange?.(v);
   });
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setReady(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   return (
     <fieldset className={className}>
-      <legend className="mb-2 t-label text-n-600">{legend}</legend>
-      <div className={`flex gap-x-6 gap-y-3 ${orientation === "vertical" ? "flex-col" : "flex-wrap"}`}>
+      <legend className="mb-2.5 t-label text-n-600">{legend}</legend>
+      <div className={`flex gap-x-6 gap-y-3.5 ${orientation === "vertical" ? "flex-col" : "flex-wrap"}`}>
         {options.map((option) => (
           <label
             key={option.value}
-            className={`group/radio relative flex cursor-pointer items-start gap-3 ${option.disabled ? "cursor-not-allowed opacity-50" : ""}`}
+            className={`group/radio relative flex items-start gap-3 ${option.disabled ? "cursor-not-allowed opacity-50" : ""}`}
           >
             <input
               type="radio"
@@ -61,9 +70,12 @@ export function RadioGroup({
             />
             <span
               aria-hidden="true"
-              className="relative mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-n-300 bg-surface shadow-[var(--shadow-inset)] transition-[border-color,box-shadow,transform,translate,scale,rotate] duration-[var(--dur-fast)] ease-[var(--ease-out)] group-hover/radio:border-primary-line peer-checked:border-primary peer-focus-visible:shadow-[var(--focus-ring)] peer-active:scale-90 [&>span]:scale-0 peer-checked:[&>span]:scale-100"
+              className="relative mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-n-300 bg-surface transition-[border-color,box-shadow,scale] duration-[var(--dur-base)] ease-[var(--ease-smooth)] group-hover/radio:border-n-400 peer-checked:border-primary peer-focus-visible:shadow-[0_0_0_3px_var(--ring-soft)] peer-active:scale-90"
             >
-              <span className="h-2.5 w-2.5 rounded-full bg-primary transition-transform duration-[var(--dur-base)] ease-[var(--ease-spring)]" />
+              <span className="h-2.5 w-2.5 scale-0 rounded-full bg-primary transition-[scale] duration-[var(--dur-slow)] ease-[var(--ease-spring)] group-has-[:checked]/radio:scale-100" />
+              {ready ? (
+                <span className="pointer-events-none absolute -inset-0.5 rounded-full border-2 border-primary opacity-0 group-has-[:checked]/radio:animate-burst" />
+              ) : null}
             </span>
             <span className="min-w-0">
               <span className="block t-ui text-text">{option.label}</span>

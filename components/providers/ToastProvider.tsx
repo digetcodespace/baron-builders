@@ -1,9 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Button, Icon, IconButton, type IconName } from "@/components/ui";
-
-type Tone = "info" | "ok" | "warn" | "bad";
+import { Button, Icon, IconButton, TONES, TONE_TILE, toneStyle, type Tone } from "@/components/ui";
 
 export interface ToastOptions {
   tone?: Tone;
@@ -24,17 +22,10 @@ interface ToastContextValue {
 
 const ToastContext = createContext<ToastContextValue | null>(null);
 
-const TONES: Record<Tone, { icon: IconName; accent: string; bar: string }> = {
-  info: { icon: "info", accent: "text-info", bar: "bg-info" },
-  ok: { icon: "check-circle", accent: "text-ok", bar: "bg-ok" },
-  warn: { icon: "alert-triangle", accent: "text-warn", bar: "bg-warn" },
-  bad: { icon: "alert-circle", accent: "text-bad", bar: "bg-bad" },
-};
-
 const DEFAULT_MS = 5000;
 
 function Toast({ toast, onDismiss }: { toast: ToastData; onDismiss: (id: number) => void }) {
-  const tone = TONES[toast.tone ?? "info"];
+  const tone = toast.tone ?? "info";
   const duration = toast.durationMs === undefined ? DEFAULT_MS : toast.durationMs;
   const [leaving, setLeaving] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -58,41 +49,44 @@ function Toast({ toast, onDismiss }: { toast: ToastData; onDismiss: (id: number)
 
   return (
     <div
-      className={`grid pointer-events-auto transition-[grid-template-rows,margin] duration-[var(--dur-base)] ease-[var(--ease-out)] ${leaving ? "-mb-2 grid-rows-[0fr]" : "grid-rows-[1fr]"}`}
+      className={`pointer-events-auto grid transition-[grid-template-rows,margin] duration-[var(--dur-base)] ease-[var(--ease-out)] ${leaving ? "-mb-2 grid-rows-[0fr]" : "grid-rows-[1fr]"}`}
     >
-    <div className={leaving ? "min-h-0 overflow-hidden" : "min-h-0"}>
-    <div
-      role="status"
-      onPointerEnter={() => setPaused(true)}
-      onPointerLeave={() => setPaused(false)}
-      className={`relative overflow-hidden rounded-lg border border-border bg-surface shadow-overlay ${leaving ? "animate-toast-out" : "animate-toast-in"}`}
-    >
-      <div className="flex items-start gap-3 py-3.5 pl-4 pr-2">
-        <Icon name={tone.icon} size={20} className={`mt-0.5 ${tone.accent}`} />
-        <p className="min-w-0 flex-1 pt-0.5 t-ui">{toast.message}</p>
-        {toast.actionLabel && toast.onAction ? (
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => {
-              toast.onAction?.();
-              dismiss();
-            }}
-          >
-            {toast.actionLabel}
-          </Button>
-        ) : null}
-        <IconButton label="Dismiss" icon="x" size="sm" onClick={dismiss} />
+      <div className={leaving ? "min-h-0 overflow-hidden" : "min-h-0"}>
+        <div
+          role="status"
+          style={toneStyle(tone)}
+          onPointerEnter={() => setPaused(true)}
+          onPointerLeave={() => setPaused(false)}
+          className={`relative overflow-hidden rounded-2xl border border-border bg-surface ${leaving ? "animate-toast-out" : "animate-toast-in"}`}
+        >
+          <div className="flex items-center gap-3 py-3 pl-3 pr-2.5">
+            <span className={`${TONE_TILE} h-10 w-10 animate-chip-pop`}>
+              <Icon name={TONES[tone].icon} size={20} />
+            </span>
+            <p className="min-w-0 flex-1 t-ui font-medium">{toast.message}</p>
+            {toast.actionLabel && toast.onAction ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => {
+                  toast.onAction?.();
+                  dismiss();
+                }}
+              >
+                {toast.actionLabel}
+              </Button>
+            ) : null}
+            <IconButton label="Dismiss" icon="x" size="sm" onClick={dismiss} />
+          </div>
+          {duration !== null ? (
+            <span
+              aria-hidden="true"
+              className="absolute inset-x-0 bottom-0 h-0.5 origin-left animate-countdown bg-[var(--tone)] opacity-60"
+              style={{ animationDuration: `${duration}ms`, animationPlayState: paused ? "paused" : "running" }}
+            />
+          ) : null}
+        </div>
       </div>
-      {duration !== null ? (
-        <span
-          aria-hidden="true"
-          className={`absolute inset-x-0 bottom-0 h-0.5 origin-left animate-countdown ${tone.bar}`}
-          style={{ animationDuration: `${duration}ms`, animationPlayState: paused ? "paused" : "running" }}
-        />
-      ) : null}
-    </div>
-    </div>
     </div>
   );
 }

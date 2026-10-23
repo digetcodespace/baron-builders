@@ -72,6 +72,14 @@
   --animate-march: march 700ms linear infinite;
   --animate-check-pop: check-pop var(--dur-base) var(--ease-spring) both;
   --animate-page-in: page-in 380ms var(--ease-out) both;
+  --animate-tip-in: tip-in 260ms var(--ease-spring) both;
+  --animate-tip-out: tip-out 140ms var(--ease-in-out) both;
+  --animate-burst: burst 520ms var(--ease-out) both;
+  --animate-draw: draw 1100ms var(--ease-draw) both;
+  --animate-cal-next: cal-next 320ms var(--ease-out) both;
+  --animate-cal-prev: cal-prev 320ms var(--ease-out) both;
+  --animate-chip-pop: chip-pop 420ms var(--ease-spring) both;
+  --animate-tick-in: tick-in 360ms var(--ease-spring) both;
   --animate-expand: expand var(--dur-base) var(--ease-out) both;
 
   @keyframes pop-in {
@@ -133,6 +141,38 @@
   @keyframes page-in {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: none; }
+  }
+  @keyframes tip-in {
+    from { opacity: 0; transform: translate(var(--tip-x, 0px), var(--tip-y, 0px)) scale(0.9); filter: blur(3px); }
+    to { opacity: 1; transform: none; filter: blur(0); }
+  }
+  @keyframes tip-out {
+    from { opacity: 1; transform: none; }
+    to { opacity: 0; transform: translate(var(--tip-x, 0px), var(--tip-y, 0px)) scale(0.94); }
+  }
+  @keyframes burst {
+    from { transform: scale(0.55); opacity: 0.55; }
+    to { transform: scale(1.9); opacity: 0; }
+  }
+  @keyframes draw {
+    from { stroke-dashoffset: 1; }
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes cal-next {
+    from { opacity: 0; transform: translateX(14px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes cal-prev {
+    from { opacity: 0; transform: translateX(-14px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes chip-pop {
+    0% { opacity: 0; transform: scale(0.6) rotate(-8deg); }
+    100% { opacity: 1; transform: none; }
+  }
+  @keyframes tick-in {
+    0% { transform: scale(0.3) rotate(-12deg); opacity: 0; }
+    100% { transform: none; opacity: 1; }
   }
   @keyframes expand { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 }

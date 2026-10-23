@@ -16,7 +16,7 @@ export function isActivePath(pathname: string, href: string) {
   return pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
 }
 
-/** Staff navigation rail. Collapses to icons; a red marker slides to the current page. */
+/** Staff navigation rail. Collapses to icons; a soft pill slides to the current page. */
 export function Sidebar({ items, homeHref }: { items: NavItem[]; homeHref: string }) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
@@ -43,7 +43,7 @@ export function Sidebar({ items, homeHref }: { items: NavItem[]; homeHref: strin
         {marker ? (
           <span
             aria-hidden="true"
-            className="absolute left-0 top-0 w-1 rounded-r-full bg-primary transition-[transform,translate,scale,rotate,height] duration-[var(--dur-slow)] ease-[var(--ease-out)]"
+            className="absolute inset-x-3 top-0 rounded-[var(--r-md)] bg-primary-soft [corner-shape:squircle] transition-[transform,translate,scale,rotate,height] duration-[var(--dur-slow)] ease-[var(--ease-smooth)]"
             style={{ transform: `translateY(${marker.top}px)`, height: marker.height }}
           />
         ) : null}
@@ -58,7 +58,7 @@ export function Sidebar({ items, homeHref }: { items: NavItem[]; homeHref: strin
               href={item.href}
               aria-current={active ? "page" : undefined}
               aria-label={collapsed ? item.label : undefined}
-              className={`group/nav relative flex h-11 items-center gap-3 rounded-md px-3 t-ui transition-colors duration-[var(--dur-fast)] ${active ? "bg-primary-soft font-semibold text-primary-hover" : "text-n-700 hover:bg-ink-soft"}`}
+              className={`group/nav relative flex h-11 items-center gap-3 rounded-md px-3 t-ui transition-colors duration-[var(--dur-fast)] ${active ? "font-semibold text-primary-hover" : "text-n-700 hover:bg-ink-soft"}`}
             >
               <Icon name={item.icon} size={20} className="transition-transform duration-[var(--dur-base)] ease-[var(--ease-spring)] group-hover/nav:scale-110" />
               <span className={`flex-1 truncate transition-opacity duration-[var(--dur-base)] ${collapsed ? "pointer-events-none w-0 opacity-0" : "opacity-100"}`}>

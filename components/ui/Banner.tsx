@@ -1,16 +1,8 @@
 import type { ReactNode } from "react";
+import { TONES, TONE_TILE, toneStyle, type Tone } from "./_tone";
 import { Button } from "./Button";
-import { Icon, type IconName } from "./Icon";
+import { Icon } from "./Icon";
 import { IconButton } from "./IconButton";
-
-type Tone = "info" | "warn" | "bad" | "ok";
-
-const TONES: Record<Tone, { box: string; icon: IconName; accent: string }> = {
-  info: { box: "bg-info-bg text-text", icon: "info", accent: "bg-info text-info" },
-  warn: { box: "bg-warn-bg text-text", icon: "alert-triangle", accent: "bg-warn text-warn" },
-  bad: { box: "bg-bad-bg text-text", icon: "alert-circle", accent: "bg-bad text-bad" },
-  ok: { box: "bg-ok-bg text-text", icon: "check-circle", accent: "bg-ok text-ok" },
-};
 
 export interface BannerProps {
   tone?: Tone;
@@ -21,26 +13,38 @@ export interface BannerProps {
   onDismiss?: () => void;
 }
 
-/** In-page banner. The one banner component; do not roll another. */
+/**
+ * In-page banner. A hairline surface with a soft tone wash that fades from the
+ * icon side, a tinted icon tile, and a faint window-grid texture at the far
+ * edge. The tone shows in the tile and the wash, never as a colored stripe.
+ */
 export function Banner({ tone = "info", title, children, actionLabel, onAction, onDismiss }: BannerProps) {
-  const t = TONES[tone];
   return (
     <div
       role="status"
-      className={`relative flex animate-expand items-start gap-3 overflow-hidden rounded-lg py-3 pl-5 pr-3 ${t.box}`}
+      style={{
+        ...toneStyle(tone),
+        background: "linear-gradient(100deg, color-mix(in srgb, var(--tone) 8%, var(--surface)) 0%, var(--surface) 62%)",
+      }}
+      className="relative flex animate-expand items-center gap-4 overflow-hidden rounded-2xl border border-[color-mix(in_srgb,var(--tone)_16%,var(--border))] py-3.5 pl-3.5 pr-3"
     >
-      <span aria-hidden="true" className={`absolute inset-y-0 left-0 w-1 ${t.accent.split(" ")[0]}`} />
-      <Icon name={t.icon} size={20} className={`mt-0.5 ${t.accent.split(" ")[1]}`} />
-      <div className="min-w-0 flex-1 t-ui">
-        {title ? <p className="font-semibold">{title}</p> : null}
-        <div className={title ? "mt-0.5 font-normal text-n-700" : ""}>{children}</div>
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-y-0 right-0 w-56 opacity-[.22] [background-image:radial-gradient(var(--tone)_1.1px,transparent_1.5px)] [background-size:11px_11px] [mask-image:linear-gradient(to_left,black,transparent)]"
+      />
+      <span className={`${TONE_TILE} relative h-11 w-11 animate-chip-pop`}>
+        <Icon name={TONES[tone].icon} size={22} />
+      </span>
+      <div className="relative min-w-0 flex-1 t-ui">
+        {title ? <p className="font-semibold text-text">{title}</p> : null}
+        <div className={title ? "mt-0.5 text-n-700" : "text-text"}>{children}</div>
       </div>
       {actionLabel && onAction ? (
-        <Button size="sm" variant="secondary" onClick={onAction}>
+        <Button size="sm" variant="secondary" onClick={onAction} className="relative">
           {actionLabel}
         </Button>
       ) : null}
-      {onDismiss ? <IconButton label="Dismiss" icon="x" size="sm" onClick={onDismiss} /> : null}
+      {onDismiss ? <IconButton label="Dismiss" icon="x" size="sm" onClick={onDismiss} className="relative" /> : null}
     </div>
   );
 }

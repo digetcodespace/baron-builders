@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, type KeyboardEvent } from "react";
+import { Button } from "./Button";
 import { IconButton } from "./IconButton";
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const WEEKDAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export function toIso(date: Date) {
   const y = date.getFullYear();
@@ -25,15 +26,20 @@ export interface CalendarProps {
   onChange: (iso: string) => void;
   min?: string;
   max?: string;
+  className?: string;
 }
 
-/** Month grid. Arrow keys move by day and week, PageUp/PageDown by month. */
-export function Calendar({ value, onChange, min, max }: CalendarProps) {
+/**
+ * Month grid with room to breathe: 44px days in a 7-column grid with gaps, the
+ * month in the display face, and a month change that slides in the direction
+ * you are travelling. Arrow keys move by day and week, PageUp/PageDown by month.
+ */
+export function Calendar({ value, onChange, min, max, className = "" }: CalendarProps) {
   const selected = value ? fromIso(value) : null;
   const today = new Date();
   const [cursor, setCursor] = useState(() => new Date((selected ?? today).getFullYear(), (selected ?? today).getMonth(), 1));
   const [focusDay, setFocusDay] = useState<string>(toIso(selected ?? today));
-  const [slide, setSlide] = useState<"next" | "prev" | null>(null);
+  const [direction, setDirection] = useState<"next" | "prev">("next");
 
   const first = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
   const daysInMonth = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0).getDate();
@@ -44,7 +50,7 @@ export function Calendar({ value, onChange, min, max }: CalendarProps) {
 
   const disabled = (iso: string) => Boolean((min && iso < min) || (max && iso > max));
   const shiftMonth = (delta: number) => {
-    setSlide(delta > 0 ? "next" : "prev");
+    setDirection(delta > 0 ? "next" : "prev");
     setCursor(new Date(cursor.getFullYear(), cursor.getMonth() + delta, 1));
   };
 
@@ -55,7 +61,7 @@ export function Calendar({ value, onChange, min, max }: CalendarProps) {
       const next = new Date(base.getFullYear(), base.getMonth(), base.getDate() + days);
       setFocusDay(toIso(next));
       if (next.getMonth() !== cursor.getMonth() || next.getFullYear() !== cursor.getFullYear()) {
-        setSlide(next > base ? "next" : "prev");
+        setDirection(next > base ? "next" : "prev");
         setCursor(new Date(next.getFullYear(), next.getMonth(), 1));
       }
       requestAnimationFrame(() => document.querySelector<HTMLElement>(`[data-day="${toIso(next)}"]`)?.focus());
@@ -68,18 +74,22 @@ export function Calendar({ value, onChange, min, max }: CalendarProps) {
     else if (event.key === "PageUp") move(-30);
   };
 
+  const todayIso = toIso(today);
   return (
-    <div className="w-72 max-w-full p-3" onKeyDown={onKeyDown}>
-      <div className="mb-2 flex items-center justify-between">
-        <IconButton label="Previous month" icon="chevron-left" size="sm" onClick={() => shiftMonth(-1)} />
-        <p aria-live="polite" className="font-display text-[length:var(--fs-ui)] font-extrabold">
-          {MONTHS[cursor.getMonth()]} {cursor.getFullYear()}
-        </p>
-        <IconButton label="Next month" icon="chevron-right" size="sm" onClick={() => shiftMonth(1)} />
+    <div className={`w-[min(23.5rem,calc(100vw-2.5rem))] p-5 ${className}`} onKeyDown={onKeyDown}>
+      <div className="mb-4 flex items-center justify-between">
+        <div aria-live="polite" className="pl-1">
+          <span className="font-display text-[length:var(--fs-h4)] font-extrabold tracking-tight">{MONTHS[cursor.getMonth()]}</span>
+          <span className="ml-2 t-ui text-n-500">{cursor.getFullYear()}</span>
+        </div>
+        <div className="flex gap-1">
+          <IconButton label="Previous month" icon="chevron-left" size="sm" onClick={() => shiftMonth(-1)} />
+          <IconButton label="Next month" icon="chevron-right" size="sm" onClick={() => shiftMonth(1)} />
+        </div>
       </div>
-      <div className="mb-1 grid grid-cols-7 text-center">
+      <div className="mb-1.5 grid grid-cols-7 gap-1.5">
         {WEEKDAYS.map((d) => (
-          <span key={d} className="py-1 t-label text-n-500">
+          <span key={d} className="py-1.5 text-center t-label text-n-500">
             {d}
           </span>
         ))}
@@ -87,13 +97,13 @@ export function Calendar({ value, onChange, min, max }: CalendarProps) {
       <div
         key={`${cursor.getFullYear()}-${cursor.getMonth()}`}
         role="grid"
-        className={`grid grid-cols-7 gap-y-0.5 ${slide === "next" ? "animate-fade-in" : slide === "prev" ? "animate-fade-in" : ""}`}
+        className={`grid grid-cols-7 gap-1.5 ${direction === "next" ? "animate-cal-next" : "animate-cal-prev"}`}
       >
         {cells.map((date, index) => {
-          if (!date) return <span key={`blank-${index}`} />;
+          if (!date) return <span key={`blank-${index}`} aria-hidden="true" />;
           const iso = toIso(date);
           const isSelected = value === iso;
-          const isToday = toIso(today) === iso;
+          const isToday = todayIso === iso;
           const off = disabled(iso);
           return (
             <button
@@ -106,13 +116,33 @@ export function Calendar({ value, onChange, min, max }: CalendarProps) {
               tabIndex={iso === focusDay ? 0 : -1}
               disabled={off}
               onClick={() => onChange(iso)}
-              className={`relative mx-auto flex aspect-square w-full max-w-9 items-center justify-center rounded-full t-ui transition-[background-color,color,transform,translate,scale,rotate] duration-[var(--dur-fast)] hover:bg-ink-soft active:scale-90 disabled:pointer-events-none disabled:opacity-30 ${isSelected ? "bg-primary font-semibold text-on-primary shadow-[var(--shadow-btn)] hover:bg-primary-hover" : ""} ${isToday && !isSelected ? "font-semibold text-primary" : ""}`}
+              className={`relative flex aspect-square w-full items-center justify-center rounded-[var(--r-md)] text-[length:var(--fs-ui)] font-medium transition-[background-color,color,scale,box-shadow] duration-[var(--dur-base)] ease-[var(--ease-smooth)] [corner-shape:squircle] active:scale-90 disabled:pointer-events-none disabled:opacity-30 ${
+                isSelected
+                  ? "bg-primary text-on-primary"
+                  : isToday
+                    ? "text-primary shadow-[inset_0_0_0_1.5px_var(--primary-line)] hover:bg-primary-soft"
+                    : "text-text hover:bg-ink-soft"
+              }`}
             >
               {date.getDate()}
-              {isToday && !isSelected ? <span aria-hidden="true" className="absolute bottom-1 h-1 w-1 rounded-full bg-primary" /> : null}
             </button>
           );
         })}
+      </div>
+      <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
+        <span className="t-small">{selected ? selected.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }) : "No date chosen"}</span>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => {
+            setDirection("next");
+            setCursor(new Date(today.getFullYear(), today.getMonth(), 1));
+            setFocusDay(todayIso);
+            if (!disabled(todayIso)) onChange(todayIso);
+          }}
+        >
+          Today
+        </Button>
       </div>
     </div>
   );

@@ -125,34 +125,23 @@ export function DataTable<T>({
                     </td>
                   </tr>
                 ))
-              : rows.map((row, index) => {
+              : rows.map((row) => {
                   const key = rowKey(row);
                   const isSelected = selected.includes(key);
                   return (
                     <tr
                       key={key}
                       onClick={onRowClick ? () => onRowClick(row) : undefined}
-                      style={{ animationDelay: `${Math.min(index, 10) * 25}ms` }}
                       data-selected={isSelected || undefined}
-                      className={`group/row relative animate-fade-in border-b border-border transition-colors duration-[var(--dur-fast)] last:border-0 hover:bg-n-50 data-[selected]:bg-primary-soft ${onRowClick ? "cursor-pointer" : ""}`}
+                      className={`group/row border-b border-border transition-colors duration-[var(--dur-base)] ease-[var(--ease-smooth)] last:border-0 hover:bg-n-50 data-[selected]:bg-primary-soft ${onRowClick ? "cursor-pointer" : ""}`}
                     >
                       {selectable ? (
-                        <td className="relative w-12 px-4 py-3" onClick={(event) => event.stopPropagation()}>
-                          <span
-                            aria-hidden="true"
-                            className="absolute inset-y-0 left-0 w-0.5 origin-center scale-y-0 bg-primary transition-transform duration-[var(--dur-base)] ease-[var(--ease-spring)] group-hover/row:scale-y-100 group-data-[selected]/row:scale-y-100"
-                          />
+                        <td className="w-12 px-4 py-3.5" onClick={(event) => event.stopPropagation()}>
                           <Checkbox label={<span className="sr-only">Select row</span>} checked={isSelected} onChange={() => toggleOne(key)} />
                         </td>
                       ) : null}
-                      {columns.map((column, ci) => (
-                        <td key={column.id} className={`relative px-4 py-3 t-ui ${column.align === "right" ? "text-right" : ""}`}>
-                          {!selectable && ci === 0 ? (
-                            <span
-                              aria-hidden="true"
-                              className="absolute inset-y-0 left-0 w-0.5 origin-center scale-y-0 bg-primary transition-transform duration-[var(--dur-base)] ease-[var(--ease-spring)] group-hover/row:scale-y-100"
-                            />
-                          ) : null}
+                      {columns.map((column) => (
+                        <td key={column.id} className={`whitespace-nowrap px-4 py-3.5 t-ui ${column.align === "right" ? "text-right" : ""}`}>
                           {column.cell(row)}
                         </td>
                       ))}

@@ -119,8 +119,9 @@ export function OverlaysSection() {
           </Drawer>
         </Specimen>
       </Grid>
-      <Grid cols={3}>
-        <Specimen name="Menu" note="arrow keys + Enter">
+      <Grid>
+        <div className="space-y-6">
+          <Specimen name="Menu" note="arrow keys + Enter">
           <Menu
             label="House actions"
             items={[
@@ -134,7 +135,7 @@ export function OverlaysSection() {
             )}
           />
         </Specimen>
-        <Specimen name="Popover">
+          <Specimen name="Popover">
           <Popover
             label="Filters"
             trigger={(props) => <Button {...props} variant="secondary" leftIcon="filter">Filters</Button>}
@@ -148,7 +149,8 @@ export function OverlaysSection() {
             )}
           </Popover>
         </Specimen>
-        <Specimen name="Calendar">
+        </div>
+        <Specimen name="Calendar" note="Today jumps to now; arrow keys move by day and week">
           <Calendar value={day} onChange={setDay} />
         </Specimen>
       </Grid>
@@ -225,7 +227,7 @@ export function DataSection() {
   ];
 
   return (
-    <Section id="data" title="Data display" blurb="Tables highlight the row you point at with a red tick; sort headers rotate their arrow. Cards lift when they are clickable.">
+    <Section id="data" title="Data display" blurb="Rows brighten as you point at them and tint when selected. Sort headers rotate their arrow. Stat cards draw their trend line in once. No colored edges anywhere.">
       <Specimen name="Data table" note="sortable, selectable, row click">
         <DataTable
           caption="Houses"
@@ -247,9 +249,9 @@ export function DataSection() {
         </div>
       </Specimen>
       <Grid cols={3}>
-        <StatCard label="Houses" value={80} icon="home" delta={{ value: 6, label: "this week" }} />
-        <StatCard label="Signed sheets" value={142} icon="clipboard" delta={{ value: 18, label: "this week" }} />
-        <StatCard label="Unpaid" value={38250} prefix="$" icon="dollar" delta={{ value: 12, label: "vs last week", goodWhenUp: false }} />
+        <StatCard label="Houses" value={80} icon="home" delta={{ value: 6, label: "this week" }} trend={[52, 55, 58, 61, 66, 70, 74, 80]} />
+        <StatCard label="Signed sheets" value={142} icon="clipboard" delta={{ value: 18, label: "this week" }} trend={[40, 52, 60, 71, 88, 104, 121, 142]} />
+        <StatCard label="Unpaid" value={38250} prefix="$" icon="dollar" delta={{ value: 12, label: "vs last week", goodWhenUp: false }} trend={[21, 24, 23, 28, 31, 30, 35, 38]} />
       </Grid>
       <Grid>
         <Specimen name="Cards">
@@ -270,7 +272,6 @@ export function DataSection() {
         </Specimen>
         <Specimen name="Description list, avatars, tags">
           <DescriptionList
-            columns={2}
             items={[
               { term: "Project", value: "Beaver Crossing" },
               { term: "Model", value: "A-34 Middle" },
@@ -278,8 +279,10 @@ export function DataSection() {
               { term: "Trades", value: <Row className="gap-1.5"><Tag>Tile</Tag><Tag tone="brand">Electric</Tag></Row> },
             ]}
           />
-          <Divider className="my-5" />
-          <Row><Avatar name="Maria Hernandez" size="lg" /><Avatar name="Tile Co" /><Avatar name="Office" size="sm" /></Row>
+          <Divider className="my-5" label="Tags" />
+          <Row className="gap-2"><Tag>Tile</Tag><Tag tone="brand">Electric</Tag><Tag tone="ink" onRemove={() => undefined}>Finishes</Tag></Row>
+          <Divider className="my-5" label="Avatars" />
+          <Row className="gap-4"><Avatar name="Maria Hernandez" size="lg" status="online" /><Avatar name="Tile Co" status="away" /><Avatar name="Office" size="sm" /><Avatar name="Sam Lee" status="offline" /></Row>
         </Specimen>
       </Grid>
       <Specimen name="Timeline" note="a house's history">

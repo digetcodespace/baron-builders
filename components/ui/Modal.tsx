@@ -51,7 +51,6 @@ export function Modal({ open, onClose, title, description, children, footer, siz
           data-state={state}
           className={`relative flex max-h-[min(90vh,46rem)] w-full flex-col overflow-hidden rounded-t-xl border border-border bg-surface shadow-overlay outline-none data-[state=closed]:animate-pop-out data-[state=open]:animate-rise-in sm:rounded-xl ${SIZES[size]}`}
         >
-          <span aria-hidden="true" className="h-1 w-full bg-primary [clip-path:polygon(0_0,calc(100%-24px)_0,100%_100%,0_100%)]" />
           <header className="flex items-start justify-between gap-4 px-6 pb-2 pt-5">
             <div>
               <h2 id={titleId} className="t-h3">

@@ -1,3 +1,5 @@
+export { TONES, TONE_TILE, toneStyle } from "./_tone";
+export type { Tone } from "./_tone";
 export { Accordion } from "./Accordion";
 export type { AccordionItem, AccordionProps } from "./Accordion";
 export { AnimatedNumber } from "./AnimatedNumber";
@@ -49,6 +51,7 @@ export { SelectField } from "./SelectField";
 export type { SelectOption } from "./SelectField";
 export { Skeleton } from "./Skeleton";
 export { Spinner } from "./Spinner";
+export { Sparkline } from "./Sparkline";
 export { StatCard } from "./StatCard";
 export { StatusPill } from "./StatusPill";
 export { Stepper } from "./Stepper";
