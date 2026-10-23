@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baron Builders Brand</title>
+<link rel="icon" type="image/svg+xml" href="logo/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="tokens.css">
+<style>
+*{box-sizing:border-box;margin:0}
+:root{color-scheme:light}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+section{padding:72px 0;border-top:1px solid var(--border)}
+.eyebrow{color:var(--primary);margin-bottom:10px}
+.sec-title{margin-bottom:12px}
+.sec-lead{max-width:62ch;margin-bottom:36px}
+.hero{display:grid;place-items:center;padding:88px 20px;background:#fff;border:1px solid var(--border);border-radius:var(--r-lg)}
+.hero img{width:min(620px,100%)}
+.grid{display:grid;gap:16px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.g6{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.tile{border-radius:var(--r-lg);border:1px solid var(--border);padding:28px;display:grid;place-items:center;min-height:170px;background:#fff}
+.tile.ink{background:var(--baron-ink)}
+.tile img{max-width:100%}
+.fav{display:grid;gap:12px;justify-items:center;padding:18px;background:#fff;border:1px solid var(--border);border-radius:var(--r-lg)}
+.fav.primary{outline:2px solid var(--primary)}
+.fav .sizes{display:flex;align-items:flex-end;gap:10px}
+.sw{border-radius:var(--r-md);overflow:hidden;border:1px solid var(--border);background:#fff}
+.sw i{display:block;height:96px}.sw div{padding:12px 14px}.sw b{display:block;font:600 var(--fs-ui)/1.3 var(--font-ui)}.sw code{font:500 var(--fs-small)/1.4 var(--font-mono);color:var(--text-muted)}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-1)}
+
+/* type specimen */
+.fam{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:16px}
+.fam .card{padding:28px}
+.fam .aa{font-size:7rem;line-height:.9;margin:14px 0 18px}
+.fam .aa.d{font-family:var(--font-display);font-stretch:118%;font-weight:900;letter-spacing:-.05em}
+.fam .aa.u{font-family:var(--font-ui);font-weight:600;letter-spacing:-.04em}
+.fam .aa.m{font-family:var(--font-mono);font-weight:500;letter-spacing:-.05em}
+.fam .glyphs{font-size:1.0625rem;color:var(--text-muted);word-break:break-all}
+.weights{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:14px;font-size:1.0625rem}
+.scale{overflow:hidden}
+.scale .r{display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:baseline;padding:22px 28px;border-bottom:1px solid var(--border)}
+.scale .r:last-child{border:0}
+.scale .spec{font:500 var(--fs-small)/1.5 var(--font-mono);color:var(--text-muted)}
+.scale .spec b{display:block;font:600 var(--fs-ui)/1.3 var(--font-ui);color:var(--text);margin-bottom:3px}
+@media(max-width:720px){.scale .r{grid-template-columns:1fr;gap:6px}}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header style="padding:64px 0 36px">
+  <div class="t-label eyebrow">Baron Builders</div>
+  <h1 class="t-display" style="margin-bottom:20px">Brand</h1>
+  <p class="t-lead" style="max-width:60ch">Built from the original logo: two towers on a ground line, heavy justified caps, red and black. Rebuilt in flat geometry, with real outlined lettering and a type system made to carry a modern internal suite.</p>
+</header>
+
+<div class="hero"><img src="logo/baron-logo.svg" alt="Baron Builders — Residential · Commercial"></div>
+
+<section>
+  <div class="t-label eyebrow">Logo</div><h2 class="t-h1 sec-title">Lockups and mark</h2>
+  <p class="t-lead sec-lead">Lettering is Montserrat Black and Bold converted to outlines, set as one justified block, as in the original. The logo is artwork. It is never retyped in a UI font.</p>
+  <div class="grid g3">
+    <div class="tile"><img src="logo/baron-logo.svg" alt=""></div>
+    <div class="tile ink"><img src="logo/baron-logo-reverse.svg" alt=""></div>
+    <div class="tile"><img src="logo/baron-mark.svg" width="160" alt=""></div>
+    <div class="tile ink"><img src="logo/baron-mark-reverse.svg" width="160" alt=""></div>
+  </div>
+</section>
+
+<section>
+  <div class="t-label eyebrow">Favicon</div><h2 class="t-h1 sec-title">Six directions. The ink tile is the pick.</h2>
+  <p class="t-lead sec-lead">Each one is checked at tab size. The ink tile holds up on both light and dark browser chrome.</p>
+  <div class="grid g6">
+    <div class="fav"><img src="logo/favicon/1-fine-grid.svg" width="120" alt=""><div class="sizes"><img src="logo/favicon/1-fine-grid.svg" width="32" alt=""><img src="logo/favicon/1-fine-grid.svg" width="16" alt=""></div><span class="t-ui">Fine grid</span></div>
+    <div class="fav"><img src="logo/favicon/2-lit-at-night.svg" width="120" alt=""><div class="sizes"><img src="logo/favicon/2-lit-at-night.svg" width="32" alt=""><img src="logo/favicon/2-lit-at-night.svg" width="16" alt=""></div><span class="t-ui">Lit at night</span></div>
+    <div class="fav"><img src="logo/favicon/3-strips.svg" width="120" alt=""><div class="sizes"><img src="logo/favicon/3-strips.svg" width="32" alt=""><img src="logo/favicon/3-strips.svg" width="16" alt=""></div><span class="t-ui">Strips</span></div>
+    <div class="fav"><img src="logo/favicon/4-sheen.svg" width="120" alt=""><div class="sizes"><img src="logo/favicon/4-sheen.svg" width="32" alt=""><img src="logo/favicon/4-sheen.svg" width="16" alt=""></div><span class="t-ui">Sheen</span></div>
+    <div class="fav primary"><img src="logo/favicon/5-ink-tile.svg" width="120" alt=""><div class="sizes"><img src="logo/favicon/5-ink-tile.svg" width="32" alt=""><img src="logo/favicon/5-ink-tile.svg" width="16" alt=""></div><span class="t-ui" style="font-weight:700">Ink tile · primary</span></div>
+    <div class="fav"><img src="logo/favicon/6-red-tile.svg" width="120" alt=""><div class="sizes"><img src="logo/favicon/6-red-tile.svg" width="32" alt=""><img src="logo/favicon/6-red-tile.svg" width="16" alt=""></div><span class="t-ui">Red tile</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="t-label eyebrow">Color</div><h2 class="t-h1 sec-title">Red does the work. Everything else stays quiet.</h2>
+  <p class="t-lead sec-lead">One loud color, a deep red for shadow, near-black ink, and warm neutrals. Status colors stay muted so a red alert still means something.</p>
+  <div class="grid g3">
+    <div class="sw"><i style="background:var(--baron-red-600)"></i><div><b>Baron Red</b><code>#C41E2A · primary</code></div></div>
+    <div class="sw"><i style="background:var(--baron-red-800)"></i><div><b>Deep Red</b><code>#7A0F17 · tower shadow</code></div></div>
+    <div class="sw"><i style="background:var(--baron-ink)"></i><div><b>Ink</b><code>#101114 · text, nav</code></div></div>
+    <div class="sw"><i style="background:var(--n-50)"></i><div><b>Paper</b><code>#F7F6F4 · app background</code></div></div>
+    <div class="sw"><i style="background:var(--n-200)"></i><div><b>Line</b><code>#E2DFDA · borders</code></div></div>
+    <div class="sw"><i style="background:linear-gradient(90deg,var(--ok) 25%,var(--warn) 25% 50%,var(--info) 50% 75%,var(--bad) 75%)"></i><div><b>Status</b><code>ok · warn · info · error</code></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="t-label eyebrow">Typography</div><h2 class="t-h1 sec-title">Three fonts, three jobs</h2>
+  <p class="t-lead sec-lead">Archivo in its expanded width carries the weight of the logo's wide caps for headlines and big numbers. Geist handles everything you read and click. Geist Mono is for IDs and money. Body text starts at 16px, and nothing readable goes below 13px.</p>
+
+  <div class="fam">
+    <div class="card"><div class="t-label" style="color:var(--primary)">Display</div><div class="aa d">Aa</div>
+      <div class="t-h3">Archivo Expanded</div><p class="t-small" style="margin:6px 0 14px">Headlines, KPI numbers, page titles. 700–900, tight tracking.</p>
+      <div class="glyphs" style="font-family:var(--font-display);font-stretch:115%;font-weight:800">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 $%&amp;#</div>
+      <div class="weights" style="font-family:var(--font-display);font-stretch:115%"><span style="font-weight:600">600</span><span style="font-weight:700">700</span><span style="font-weight:800">800</span><span style="font-weight:900">900</span></div></div>
+    <div class="card"><div class="t-label" style="color:var(--primary)">Interface</div><div class="aa u">Aa</div>
+      <div class="t-h3">Geist</div><p class="t-small" style="margin:6px 0 14px">Body, forms, buttons, tables, navigation. 400–700.</p>
+      <div class="glyphs" style="font-family:var(--font-ui)">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</div>
+      <div class="weights" style="font-family:var(--font-ui)"><span style="font-weight:400">Regular</span><span style="font-weight:500">Medium</span><span style="font-weight:600">Semibold</span><span style="font-weight:700">Bold</span></div></div>
+    <div class="card"><div class="t-label" style="color:var(--primary)">Data</div><div class="aa m">Aa</div>
+      <div class="t-h3">Geist Mono</div><p class="t-small" style="margin:6px 0 14px">Job IDs, amounts, dates, code. Tabular figures so columns align.</p>
+      <div class="glyphs" style="font-family:var(--font-mono)">JOB-2041 · $184,250.00 · 2026-10-22</div>
+      <div class="weights" style="font-family:var(--font-mono)"><span style="font-weight:400">400</span><span style="font-weight:500">500</span><span style="font-weight:600">600</span></div></div>
+  </div>
+
+  <div class="card scale">
+    <div class="r"><div class="spec"><b>Display</b>76 / 76 · 900<br>−3.5%</div><div class="t-display">We build what stands.</div></div>
+    <div class="r"><div class="spec"><b>Heading 1</b>44 / 48 · 800<br>−3%</div><div class="t-h1">Projects on schedule</div></div>
+    <div class="r"><div class="spec"><b>Heading 2</b>32 / 37 · 800<br>−2.5%</div><div class="t-h2">Job costing and change orders</div></div>
+    <div class="r"><div class="spec"><b>Heading 3</b>22 / 28 · 700<br>−1.5%</div><div class="t-h3">Harbor St. Office Fit-out</div></div>
+    <div class="r"><div class="spec"><b>Heading 4</b>18 / 23 · 700<br>−1%</div><div class="t-h4">Subcontractor insurance status</div></div>
+    <div class="r"><div class="spec"><b>Lead</b>19 / 29 · 400</div><div class="t-lead">Residential and commercial construction, tracked from first bid to final walkthrough.</div></div>
+    <div class="r"><div class="spec"><b>Body</b>16 / 26 · 400</div><div class="t-body" style="max-width:60ch">Change orders are logged against the original contract. Approvals notify the project manager, and the running total updates on the job dashboard immediately.</div></div>
+    <div class="r"><div class="spec"><b>UI</b>15 / 22 · 500</div><div class="t-ui">Buttons, inputs, table rows, and navigation items</div></div>
+    <div class="r"><div class="spec"><b>Small</b>13 / 19 · 400</div><div class="t-small">Updated 4 minutes ago by M. Alvarez</div></div>
+    <div class="r"><div class="spec"><b>Label</b>12 · 600 · +12%<br>uppercase</div><div class="t-label">Active projects</div></div>
+    <div class="r"><div class="spec"><b>Mono</b>Geist Mono · tabular</div><div class="t-mono" style="font-size:1.0625rem">JOB-2041 &nbsp; $184,250.00 &nbsp; 2026-10-22</div></div>
+    <div class="r"><div class="spec"><b>Numbers</b>Archivo 800 · tabular</div><div class="t-num" style="font-size:2.75rem;line-height:1">$412,380</div></div>
+  </div>
+</section>
+
+</div>
+</body>
+</html>
