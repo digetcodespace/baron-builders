@@ -93,6 +93,8 @@ await (async () => {
     check("signed-out visitor is redirected away from /staff", r.status === 307 && /sign-in/.test(r.location ?? ""), `${r.status} ${r.location}`);
     r = await call(anon, "GET", "/api/people");
     check("signed-out visitor gets 401 from /api/people", r.status === 401);
+    r = await call(anon, "GET", `/api/projects/${created.projectId}/house-types`);
+    check("signed-out visitor gets 401 from house types", r.status === 401);
     r = await call(anon, "GET", "/api/projects");
     check("signed-out visitor gets 401 from /api/projects", r.status === 401);
     r = await call(anon, "POST", "/api/invites", { email: "x@test.invalid", fullName: "X", role: "staff" });
@@ -138,6 +140,24 @@ await (async () => {
     r = await call(staffJar, "PUT", `/api/projects/${made.id}`, { name: `E2E Project ${stamp}`, stages: [{ id: s3.id, name: "Finishes" }, { id: s1.id, name: "Contract signed (renamed)", cutoffDate: "2026-12-01" }, { name: "Punch list" }] });
     check("reordering, renaming, adding and removing stages saves in one go", r.status === 200 && r.json?.stages?.map((x) => x.name).join() === "Finishes,Contract signed (renamed),Punch list" && r.json.stages[0].id === s3.id && !r.json.stages.some((x) => x.id === s2.id), `${r.status} ${JSON.stringify(r.json?.stages?.map((x) => x.name))}`);
     check("a due date can be changed while saving", r.json?.stages?.[1]?.cutoff_date === "2026-12-01" && r.json?.stages?.[0]?.cutoff_date === null, JSON.stringify(r.json?.stages?.map((x) => x.cutoff_date)));
+    // House types live inside a project.
+    r = await call(staffJar, "POST", `/api/projects/${made.id}/house-types`, { name: "Corner" });
+    check("staff can add a house type to a project", r.status === 201 && r.json?.name === "Corner" && r.json?.house_count === 0, `${r.status} ${JSON.stringify(r.json)}`);
+    const corner = r.json;
+    r = await call(staffJar, "POST", `/api/projects/${made.id}/house-types`, { name: "Corner" });
+    check("the same house type name twice in a project is refused", r.status === 409, String(r.status));
+    r = await call(staffJar, "POST", `/api/projects/${made.id}/house-types`, { name: "   " });
+    check("a blank house type name is refused on the name field", r.status === 400 && r.json?.error?.field === "name", `${r.status} ${JSON.stringify(r.json)}`);
+    r = await call(staffJar, "PATCH", `/api/house-types/${corner.id}`, { name: "Corner lot" });
+    check("a house type can be renamed", r.status === 200 && r.json?.name === "Corner lot", `${r.status} ${JSON.stringify(r.json)}`);
+    r = await call(staffJar, "GET", `/api/projects/${made.id}/house-types`);
+    check("the project lists its house types", r.status === 200 && r.json?.items?.length === 1 && r.json.items[0].name === "Corner lot");
+    r = await call(staffJar, "GET", `/api/projects/${created.projectId}/house-types`);
+    check("another project's house types are listed apart", r.status === 200 && r.json?.items?.every((x) => x.project_id === created.projectId) && r.json.items.some((x) => x.house_count === 1), JSON.stringify(r.json?.items?.map((x) => [x.name, x.house_count])));
+    r = await call(staffJar, "DELETE", `/api/house-types/${model.data.id}`);
+    check("a house type that has houses cannot be removed", r.status === 409, String(r.status));
+    r = await call(staffJar, "DELETE", `/api/house-types/${corner.id}`);
+    check("an unused house type can be removed", r.status === 204, String(r.status));
     r = await call(staffJar, "GET", `/api/projects/${made.id}`);
     check("the saved order is read back", r.status === 200 && r.json?.stages?.map((x) => x.position).join() === "1,2,3");
     r = await call(staffJar, "GET", "/api/projects");
@@ -177,6 +197,8 @@ await (async () => {
     check("buyer is turned away from /staff", r.status === 307 && /buyer/.test(r.location ?? ""), `${r.status} ${r.location}`);
     r = await call(buyerJar, "GET", "/api/people");
     check("buyer cannot list people", r.status === 403, String(r.status));
+    r = await call(buyerJar, "GET", `/api/projects/${created.projectId}/house-types`);
+    check("buyer cannot list house types", r.status === 403, String(r.status));
     r = await call(buyerJar, "GET", "/api/projects");
     check("buyer cannot list projects", r.status === 403, String(r.status));
     r = await call(buyerJar, "POST", "/api/projects", { name: "Nope", stages: [] });

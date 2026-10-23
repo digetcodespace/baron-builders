@@ -37,6 +37,8 @@ const SPECS = {
   "people-read": { limit: 120, windowSeconds: 60 },
   "projects-read": { limit: 120, windowSeconds: 60 },
   "projects-write": { limit: 30, windowSeconds: 60 },
+  "house-types-read": { limit: 120, windowSeconds: 60 },
+  "house-types-write": { limit: 60, windowSeconds: 60 },
 } as const satisfies Record<string, LimitSpec>;
 
 export type LimiterName = keyof typeof SPECS;

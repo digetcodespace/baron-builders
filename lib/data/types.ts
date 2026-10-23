@@ -36,6 +36,15 @@ export interface ProjectStageRow {
   color: string | null;
 }
 
+/** A house type (a `models` row) with how many houses use it. */
+export interface HouseTypeRow {
+  id: string;
+  project_id: string;
+  name: string;
+  created_at: string;
+  house_count: number;
+}
+
 /** A project with its stages, in order. */
 export interface ProjectDetail extends ProjectRow {
   stages: ProjectStageRow[];
