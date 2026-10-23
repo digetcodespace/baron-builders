@@ -81,6 +81,12 @@ Baron Builders is one company; the access boundary is the **role plus the house*
 - The user-JWT-scoped server client is the default for every service function. RLS is the authorization model; trust it.
 - The privileged (service-role) client bypasses RLS. Using it for ordinary user-data reads is a security bug, not a shortcut. Keep a **closed, canonical list** of allowed uses in one place (no-session paths such as webhooks and scheduled jobs like reminders, the auth-admin API, private-storage signing for documents and PDFs, tables with no user write policy by design) and enforce it with a script. If RLS feels "in the way", the policy is wrong — fix it.
 
+## Supabase CLI
+
+- **Use the Supabase CLI for everything on the hosted project** (`syxcjsjquxvqqyxtxvme`): `npx supabase db push` for migrations, `config push` for auth settings, `projects api-keys` for keys, `db query` for one-off reads. Never hand SQL to the user to paste, and never reach for the dashboard or a hand-rolled script when a CLI command does it.
+- The CLI needs a valid login. If a command fails with "Invalid access token", run `npx supabase login` (the user completes the browser step in their terminal), then retry. Don't work around an expired login.
+- Throwaway visual-check accounts and fixtures come from the CLI's keys, are created for the check, and are deleted after it.
+
 ## Realtime
 
 - All subscriptions go through one shared realtime hook under one shared provider. Never open a channel directly in a component.
