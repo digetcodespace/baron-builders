@@ -22,6 +22,11 @@ export const color = {
   infoBg: "var(--info-bg)",
   bad: "var(--bad)",
   badBg: "var(--bad-bg)",
+  primarySoft: "var(--primary-soft)",
+  primaryLine: "var(--primary-line)",
+  inkSoft: "var(--ink-soft)",
+  scrim: "var(--scrim)",
+  glass: "var(--glass)",
 } as const;
 
 export const font = {
@@ -39,12 +44,18 @@ export const radius = {
 export const shadow = {
   low: "var(--shadow-1)",
   high: "var(--shadow-2)",
+  overlay: "var(--shadow-3)",
+  button: "var(--shadow-btn)",
+  inset: "var(--shadow-inset)",
 } as const;
 
 export const motion = {
   fast: "var(--dur-fast)",
   base: "var(--dur-base)",
+  slow: "var(--dur-slow)",
   easeOut: "var(--ease-out)",
+  spring: "var(--ease-spring)",
+  inOut: "var(--ease-in-out)",
 } as const;
 
 export const zIndex = {
@@ -52,6 +63,8 @@ export const zIndex = {
   tooltip: "var(--z-tooltip)",
   banner: "var(--z-banner)",
   toast: "var(--z-toast)",
+  overlay: "var(--z-overlay)",
+  popover: "var(--z-popover)",
 } as const;
 
 export const focusRing = "var(--focus-ring)";

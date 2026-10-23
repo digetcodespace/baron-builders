@@ -13,7 +13,8 @@ for (const file of sourceFiles(["app", "lib", "components", "hooks", "scripts", 
   read(file)
     .split("\n")
     .forEach((line, i) => {
-      const m = line.match(re);
+      // `labelledby` is the standard ARIA attribute name, an external API copied verbatim.
+      const m = line.replace(/labelledby/gi, "").match(re);
       if (m) failures.push(`${file}:${i + 1}: "${m[0]}" (use the US spelling)`);
     });
 }

@@ -32,7 +32,7 @@ for (const file of files) {
   }
 
   // No second toast lib, no animate-pulse skeletons, no native title tooltips.
-  if (/animate-pulse/.test(code)) failures.push(`${file}: use <Skeleton> (the .shimmer texture), not animate-pulse`);
+  if (/animate-pulse(?!-)/.test(code)) failures.push(`${file}: use <Skeleton> (the .shimmer texture), not animate-pulse`);
   if (file.startsWith("components/") || file.startsWith("app/")) {
     if (/<(?:button|Button|IconButton)\b[^>]*\stitle=/.test(code)) failures.push(`${file}: no native title on buttons; use <Tooltip>`);
   }

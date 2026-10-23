@@ -51,10 +51,27 @@
   --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px; --s-8:72px;
 
   /* ---------- Motion + layering (app UI) ---------- */
-  --dur-fast:120ms; --dur-base:200ms;
+  --dur-fast:120ms; --dur-base:200ms; --dur-slow:360ms;
   --ease-out:cubic-bezier(.2,.8,.2,1);
-  --z-sticky:20; --z-tooltip:40; --z-banner:50; --z-toast:60;
-  --focus-ring:0 0 0 3px rgb(196 30 42/.35);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --ease-in-out:cubic-bezier(.65,0,.35,1);
+  --z-sticky:20; --z-tooltip:40; --z-banner:50; --z-toast:60; --z-overlay:70; --z-popover:80;
+
+  /* ---------- Surfaces, rings, depth (app UI) ---------- */
+  --n-400:#a9a59d;
+  --primary-soft:color-mix(in srgb,var(--primary) 10%,var(--surface));
+  --primary-line:color-mix(in srgb,var(--primary) 34%,var(--surface));
+  --ink-soft:color-mix(in srgb,var(--baron-ink) 6%,var(--surface));
+  --scrim:color-mix(in srgb,var(--baron-ink) 46%,transparent);
+  --glass:color-mix(in srgb,var(--surface) 80%,transparent);
+  --focus-ring:0 0 0 3px color-mix(in srgb,var(--primary) 28%,transparent);
+  --shadow-3:0 28px 64px -18px rgb(16 17 20/.34),0 6px 16px -6px rgb(16 17 20/.14);
+  --shadow-btn:0 1px 0 rgb(255 255 255/.2) inset,0 -1px 0 rgb(0 0 0/.16) inset,0 1px 2px rgb(122 15 23/.34),0 6px 14px -6px rgb(196 30 42/.5);
+  --shadow-btn-hover:0 1px 0 rgb(255 255 255/.24) inset,0 -1px 0 rgb(0 0 0/.16) inset,0 2px 4px rgb(122 15 23/.32),0 10px 20px -8px rgb(196 30 42/.6);
+  --shadow-ink:0 1px 0 rgb(255 255 255/.1) inset,0 1px 2px rgb(16 17 20/.4),0 6px 14px -6px rgb(16 17 20/.5);
+  --shadow-inset:inset 0 1px 2px rgb(16 17 20/.06);
+  --sheen:linear-gradient(100deg,transparent,rgb(255 255 255/.34),transparent);
+  --slant:7px;
 }
 
 /* ---------- Base + type utilities ---------- */

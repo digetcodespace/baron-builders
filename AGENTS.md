@@ -46,6 +46,24 @@ Each rule in CLAUDE.md that a script can enforce has one. A new exception goes i
 | `list-pagination` | Every `lib/data` `list*` returns `Page<T>` unless in `allowlist-list-pagination.txt` |
 | `spelling` | US English |
 
+## Component library
+
+Every control is custom and lives in `components/ui/` (one file each, exported from `components/ui/index.ts`). The live reference is the gallery at **/design** (`components/dev/`): every component, every state, interactive. Open it before building a screen, and add any new component to it. It is visible during build-out; restrict or remove it before launch.
+
+| Group | Components |
+| --- | --- |
+| Actions | Button, LinkButton, IconButton |
+| Inputs | TextField, TextArea, SelectField (searchable), SearchField, CurrencyField, NumberStepper, DateField + Calendar, Checkbox, RadioGroup, Switch, SegmentedControl, OptionCardGroup, OtpField, FileDropzone |
+| Feedback | Toast (providers), Banner, Tooltip, InfoHint, StatusPill, ProgressBar, Skeleton, Spinner, BrandLoader, EmptyState, AnimatedNumber, Money |
+| Overlays | Modal, ConfirmDialog, Drawer, Popover, Menu |
+| Navigation | Tabs, Breadcrumbs, Stepper, Accordion; layout: Sidebar, TopBar, MobileTabBar, AppShell |
+| Data display | Card, StatCard, DataTable, Avatar, Tag, Timeline, DescriptionList, Divider |
+| Foundations | Icon (49 icons in one file), BrandLogo, tokens (`brand/tokens.css`), motion (`app/globals.css`) |
+
+**Design language.** One field frame for every labeled input: a floating label, a focus ring, and the "slab", a slanted red bar that draws under the field on focus (the logo's ground slab). Buttons lift on hover, settle on press, and primary buttons catch a sheen. Selected states use brand red with a soft tint. All motion comes from the keyframes and easing tokens in `app/globals.css` and `brand/tokens.css`, and respects reduced-motion.
+
+**Rules for new components.** Colors, radii, shadows, durations, and z-indexes come from tokens only. Labeled inputs use `FieldShell` (never hand-roll a label and input). Overlays use `Portal`, `usePresence`, and the focus and scroll hooks in `components/ui/_hooks.ts`. Icon-only buttons are `IconButton` (tooltip built in). Never add a second toast, modal, or tooltip.
+
 ## Folder map
 
 ```
