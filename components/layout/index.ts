@@ -2,6 +2,8 @@ export { AppShell } from "./AppShell";
 export { MobileTabBar } from "./MobileTabBar";
 export { PortalLoading } from "./PortalLoading";
 export { PortalShell } from "./PortalShell";
+export { SectionNav } from "./SectionNav";
+export type { SectionNavGroup, SectionNavItem } from "./SectionNav";
 export { Sidebar } from "./Sidebar";
 export type { NavItem } from "./Sidebar";
 export { TopBar } from "./TopBar";
