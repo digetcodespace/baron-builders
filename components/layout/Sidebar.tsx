@@ -41,9 +41,9 @@ export function Sidebar({ items, homeHref }: { items: NavItem[]; homeHref: strin
     <aside
       className={`hidden shrink-0 flex-col border-r border-border bg-surface transition-[width] duration-[var(--dur-slow)] ease-[var(--ease-out)] md:flex ${collapsed ? "w-[4.5rem]" : "w-64"}`}
     >
-      <div className="flex h-16 items-center justify-between border-b border-border px-4">
+      <div className="flex h-14 items-center justify-between border-b border-border px-4">
         <Link href={homeHref} aria-label="Baron Builders home" className="overflow-hidden">
-          <BrandLogo variant={collapsed ? "mark" : "full"} height={collapsed ? 34 : 38} />
+          <BrandLogo variant={collapsed ? "mark" : "full"} height={collapsed ? 26 : 28} />
         </Link>
       </div>
       <nav aria-label="Main" className="relative flex-1 space-y-1 p-3">
