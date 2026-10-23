@@ -10,7 +10,7 @@ export default async function StaffDashboardPage() {
   const firstPage = await listHouses(ctx, {});
   return (
     <>
-      <PageHeader title="Dashboard" description="Every house and where it stands." />
+      <PageHeader title="Dashboard" />
       <HouseList initialPage={firstPage} />
     </>
   );

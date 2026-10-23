@@ -27,7 +27,6 @@ export function ProjectsView() {
     <>
       <PageHeader
         title="Projects"
-        info="Each development is a pipeline. Open a project to manage its stages, house types, and more."
         actions={
           <Button leftIcon="plus" onClick={() => setCreating(true)}>
             New project
@@ -38,7 +37,6 @@ export function ProjectsView() {
         <EmptyState
           icon="building"
           title="No projects yet"
-          description="Start with a project and its stages, then add its house types and houses."
           action={<Button onClick={() => setCreating(true)}>New project</Button>}
         />
       ) : (

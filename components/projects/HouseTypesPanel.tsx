@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, ConfirmDialog, DataTable, Drawer, EmptyState, IconButton, InfoHint, Skeleton, TextField, type Column } from "@/components/ui";
+import { Button, ConfirmDialog, DataTable, Drawer, EmptyState, IconButton, Skeleton, TextField, type Column } from "@/components/ui";
 import { useToast } from "@/components/providers";
 import type { HouseTypeRow } from "@/lib/data";
 import { useHouseTypeActions, useHouseTypesList } from "@/hooks/useHouseTypes";
@@ -49,7 +49,6 @@ function HouseTypeDrawer({
       onClose={onClose}
       dismissible={!busy}
       title={editing ? "Rename house type" : "New house type"}
-      description="A house type is a model of house in this project, like Corner or Middle."
       footer={
         <>
           <Button variant="ghost" onClick={onClose} disabled={busy}>
@@ -108,12 +107,9 @@ export function HouseTypesPanel({ projectId }: { projectId: string }) {
   return (
     <section aria-labelledby="house-types-heading">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <h2 id="house-types-heading" className="t-h4">
-            House types
-          </h2>
-          <InfoHint label="About house types">The models of house in this project, like Corner or Middle. Each house will be one of these.</InfoHint>
-        </div>
+        <h2 id="house-types-heading" className="t-h4">
+          House types
+        </h2>
         <Button leftIcon="plus" onClick={() => open(null)}>
           New house type
         </Button>
@@ -123,7 +119,6 @@ export function HouseTypesPanel({ projectId }: { projectId: string }) {
         <EmptyState
           icon="home"
           title="No house types yet"
-          description="Add the models in this project, like Corner or Middle."
           action={<Button onClick={() => open(null)}>New house type</Button>}
         />
       ) : (

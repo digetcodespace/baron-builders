@@ -46,7 +46,6 @@ export function NewProjectDrawer({ open, onClose, onCreated }: NewProjectDrawerP
       dismissible={!busy}
       size="lg"
       title="New project"
-      description="Name the project, then list its stages in the order a house moves through them."
       footer={
         <>
           <Button variant="ghost" onClick={onClose} disabled={busy}>

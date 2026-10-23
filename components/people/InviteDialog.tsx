@@ -107,7 +107,6 @@ export function InviteDialog({ open, onClose, onInvited }: InviteDialogProps) {
       open={open}
       onClose={onClose}
       title="Invite someone"
-      description="Accounts are created by invitation only. They sign in with an emailed code."
       dismissible={!busy}
       footer={
         <>
@@ -148,7 +147,7 @@ export function InviteDialog({ open, onClose, onInvited }: InviteDialogProps) {
         />
         {role === "buyer" ? (
           houseOptions.length === 0 && !targets.loading ? (
-            <EmptyState icon="home" title="No houses yet" description="Add the project's houses first, then invite their buyers." />
+            <EmptyState icon="home" title="No houses yet" />
           ) : (
             <SelectField
               label="House"
@@ -163,7 +162,7 @@ export function InviteDialog({ open, onClose, onInvited }: InviteDialogProps) {
         ) : null}
         {role === "vendor" ? (
           vendorOptions.length === 0 && !targets.loading ? (
-            <EmptyState icon="building" title="No vendors yet" description="Add the vendor company first, then invite its people." />
+            <EmptyState icon="building" title="No vendors yet" />
           ) : (
             <SelectField
               label="Vendor company"
