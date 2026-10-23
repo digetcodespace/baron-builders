@@ -108,7 +108,7 @@ export function SignInForm({ initialEmail = "", persona = "default" }: { initial
           />
         </Reveal>
         <Reveal show={onCode} order={2} className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1">
-          <Button variant="ghost" size="sm" disabled={cooldown > 0 || busy} onClick={() => void requestCode(email)}>
+          <Button variant="primary" size="sm" disabled={cooldown > 0 || busy} onClick={() => void requestCode(email)}>
             {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend code"}
           </Button>
           <Button variant="ghost" size="sm" disabled={busy} onClick={backToEmail}>
