@@ -1,31 +1,15 @@
-"use client";
-
-import type { ButtonHTMLAttributes, PointerEvent, ReactNode } from "react";
-import { SURFACE, Wipe, useRipple } from "./_buttonMotion";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { Face, SURFACE, VARIANT_STYLES } from "./_buttonStyle";
 import { Icon, type IconName } from "./Icon";
 import { Tooltip } from "./Tooltip";
 
 type Variant = "ghost" | "secondary" | "primary" | "ink";
 type Size = "sm" | "md" | "lg";
 
-const VARIANTS: Record<Variant, { base: string; wipe: string; ripple: "light" | "dark" }> = {
-  ghost: { base: "bg-transparent text-text", wipe: "bg-ink-soft", ripple: "dark" },
-  secondary: {
-    base: "border border-border bg-surface text-text shadow-low hover:border-n-300",
-    wipe: "bg-n-100",
-    ripple: "dark",
-  },
-  primary: {
-    base: "bg-primary text-on-primary shadow-[var(--shadow-btn)] hover:shadow-[var(--shadow-btn-hover)]",
-    wipe: "bg-primary-hover",
-    ripple: "light",
-  },
-  ink: { base: "bg-ink text-on-primary shadow-[var(--shadow-ink)]", wipe: "bg-primary", ripple: "light" },
-};
 const SIZES: Record<Size, { box: string; icon: number }> = {
-  sm: { box: "h-8 w-8", icon: 16 },
-  md: { box: "h-10 w-10", icon: 20 },
-  lg: { box: "h-12 w-12", icon: 22 },
+  sm: { box: "h-8 w-9 [--btn-slant:5px]", icon: 16 },
+  md: { box: "h-10 w-11 [--btn-slant:6px]", icon: 20 },
+  lg: { box: "h-12 w-14 [--btn-slant:7px]", icon: 22 },
 };
 
 export interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "title" | "aria-label" | "content"> {
@@ -40,7 +24,7 @@ export interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonEle
   showTooltip?: boolean;
 }
 
-/** Icon-only button. Carries a branded tooltip by default; never re-wrap it in `<Tooltip>`. */
+/** Icon-only button in the same slab shape as Button. Carries a branded tooltip by default; never re-wrap it in `<Tooltip>`. */
 export function IconButton({
   label,
   icon,
@@ -50,25 +34,18 @@ export function IconButton({
   showTooltip = true,
   className = "",
   type = "button",
-  onPointerDown,
   ...rest
 }: IconButtonProps) {
-  const style = VARIANTS[variant];
-  const ripple = useRipple(style.ripple);
+  const v = VARIANT_STYLES[variant];
   const button = (
     <button
       type={type}
       aria-label={label}
-      className={`${SURFACE} ${style.base} ${SIZES[size].box} ${className}`}
-      onPointerDown={(event: PointerEvent<HTMLButtonElement>) => {
-        ripple.onPointerDown(event);
-        onPointerDown?.(event);
-      }}
+      className={`${SURFACE} ${v.edge} ${v.text} ${SIZES[size].box} ${className}`}
       {...rest}
     >
-      <Wipe className={style.wipe} />
-      {ripple.layer}
-      <Icon name={icon} size={SIZES[size].icon} className="transition-transform duration-[var(--dur-base)] ease-[var(--ease-spring)] group-hover/btn:scale-110" />
+      <Face bordered={v.bordered} className={v.face} />
+      <Icon name={icon} size={SIZES[size].icon} />
     </button>
   );
   return showTooltip ? <Tooltip content={content ?? label}>{button}</Tooltip> : button;

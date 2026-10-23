@@ -1,25 +1,25 @@
-"use client";
-
 import Link from "next/link";
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes, PointerEvent, ReactNode } from "react";
-import { BusyStripes, SURFACE, VARIANT_STYLES, Wipe, useRipple, type ButtonVariant } from "./_buttonMotion";
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
+import { BusyStripes, Face, SURFACE, VARIANT_STYLES, type ButtonVariant } from "./_buttonStyle";
 import { Icon, type IconName } from "./Icon";
 import { Spinner } from "./Spinner";
 
-export type { ButtonVariant } from "./_buttonMotion";
+export type { ButtonVariant } from "./_buttonStyle";
 export type ButtonSize = "sm" | "md" | "lg";
 
+/** `--btn-slant` is how far the slab leans; padding grows with it so labels stay optically centered. */
 const SIZES: Record<ButtonSize, string> = {
-  sm: "h-8 gap-1.5 px-3 text-[length:var(--fs-small)] font-semibold",
-  md: "h-10 gap-2 px-4 t-ui",
-  lg: "h-12 gap-2.5 px-6 text-[length:var(--fs-body)] font-semibold",
+  sm: "h-8 gap-1.5 px-4 [--btn-slant:6px] text-[length:var(--fs-small)] font-semibold",
+  md: "h-10 gap-2 px-6 [--btn-slant:8px] t-ui",
+  lg: "h-12 gap-2.5 px-8 [--btn-slant:10px] text-[length:var(--fs-body)] font-semibold",
 };
 
 /** Cancels the flex gap when the leading slot is empty, so a button never shifts when loading starts. */
 const GAP_PULL: Record<ButtonSize, string> = { sm: "-mr-1.5", md: "-mr-2", lg: "-mr-2.5" };
 
 function classes(variant: ButtonVariant, size: ButtonSize, extra: string) {
-  return `${SURFACE} ${VARIANT_STYLES[variant].base} ${SIZES[size]} ${extra}`;
+  const v = VARIANT_STYLES[variant];
+  return `${SURFACE} ${v.edge} ${v.text} ${SIZES[size]} ${extra}`;
 }
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -32,11 +32,10 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 /**
- * Text button. On hover a slanted slab (the logo's ground slab) wipes across; a
- * press sends a ripple from the pointer and springs the button down. Gets no
- * tooltip when its label explains the action; wrap it in `<Tooltip>` only to
- * explain a non-obvious consequence, and always when it is conditionally
- * disabled, to say why.
+ * Text button, cut in the shape of the logo's ground slab. Hover only shifts
+ * color, so nothing jumps. Gets no tooltip when its label explains the action;
+ * wrap it in `<Tooltip>` only to explain a non-obvious consequence, and always
+ * when it is conditionally disabled, to say why.
  */
 export function Button({
   variant = "primary",
@@ -49,12 +48,10 @@ export function Button({
   className = "",
   children,
   type = "button",
-  onPointerDown,
   ...rest
 }: ButtonProps) {
   const iconSize = size === "sm" ? 16 : 18;
-  const style = VARIANT_STYLES[variant];
-  const ripple = useRipple(style.ripple);
+  const v = VARIANT_STYLES[variant];
   const hasLead = loading || Boolean(leftIcon);
 
   return (
@@ -63,14 +60,9 @@ export function Button({
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       className={classes(variant, size, `${fullWidth ? "w-full" : ""} ${className}`)}
-      onPointerDown={(event: PointerEvent<HTMLButtonElement>) => {
-        ripple.onPointerDown(event);
-        onPointerDown?.(event);
-      }}
       {...rest}
     >
-      <Wipe className={style.wipe} />
-      {ripple.layer}
+      <Face bordered={v.bordered} className={v.face} />
       {loading ? <BusyStripes /> : null}
       <span
         aria-hidden="true"
@@ -84,7 +76,7 @@ export function Button({
         <Icon
           name={rightIcon}
           size={iconSize}
-          className="transition-transform duration-[var(--dur-base)] ease-[var(--ease-spring)] group-hover/btn:translate-x-1"
+          className="transition-transform duration-[var(--dur-base)] ease-[var(--ease-out)] group-hover/btn:translate-x-0.5"
         />
       ) : null}
     </button>
@@ -109,32 +101,20 @@ export function LinkButton({
   rightIcon,
   className = "",
   children,
-  onPointerDown,
   ...rest
 }: LinkButtonProps) {
   const iconSize = size === "sm" ? 16 : 18;
-  const style = VARIANT_STYLES[variant];
-  const ripple = useRipple(style.ripple);
-
+  const v = VARIANT_STYLES[variant];
   return (
-    <Link
-      href={href}
-      className={classes(variant, size, className)}
-      onPointerDown={(event: PointerEvent<HTMLAnchorElement>) => {
-        ripple.onPointerDown(event);
-        onPointerDown?.(event);
-      }}
-      {...rest}
-    >
-      <Wipe className={style.wipe} />
-      {ripple.layer}
+    <Link href={href} className={classes(variant, size, className)} {...rest}>
+      <Face bordered={v.bordered} className={v.face} />
       {leftIcon ? <Icon name={leftIcon} size={iconSize} /> : null}
       <span>{children}</span>
       {rightIcon ? (
         <Icon
           name={rightIcon}
           size={iconSize}
-          className="transition-transform duration-[var(--dur-base)] ease-[var(--ease-spring)] group-hover/btn:translate-x-1"
+          className="transition-transform duration-[var(--dur-base)] ease-[var(--ease-out)] group-hover/btn:translate-x-0.5"
         />
       ) : null}
     </Link>

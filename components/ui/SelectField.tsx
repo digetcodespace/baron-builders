@@ -168,7 +168,7 @@ export function SelectField({
           disabled={disabled}
           onClick={() => (open ? close() : openList())}
           onKeyDown={onKeyDown}
-          className="block w-full truncate bg-transparent px-3.5 pb-1.5 pt-[1.45rem] text-left t-ui text-text outline-none focus-visible:shadow-none disabled:cursor-not-allowed"
+          className="block w-full truncate bg-transparent px-4 pb-2.5 pt-6 text-left text-[length:var(--fs-ui)] leading-[1.45] font-medium text-text outline-none disabled:cursor-not-allowed"
         >
           {current ? current.label : <span className="text-transparent">{placeholder}</span>}
         </button>

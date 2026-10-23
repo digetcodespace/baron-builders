@@ -41,7 +41,7 @@ export function InputsSection() {
     <Section
       id="inputs"
       title="Inputs"
-      blurb="Every field shares one frame: a floating label, a focus ring, and a slanted red slab that draws itself under the field, echoing the logo. Click into any of them."
+      blurb="Every field shares one frame. On focus the border color fades in all the way around, a soft halo follows, and a red line draws left to right along the whole bottom edge. On blur the line leaves to the right. Click into any of them."
     >
       <Grid>
         <Specimen name="Text field" note="label floats, slab draws on focus">

@@ -55,13 +55,13 @@ export function TextField({
       leading={leadingIcon ? <Icon name={leadingIcon} size={18} /> : undefined}
       trailing={
         <>
-          {suffix ? <span className="pr-1.5 pt-3 t-small">{suffix}</span> : null}
+          {suffix ? <span className="self-end pb-3 pr-1.5 t-small">{suffix}</span> : null}
           {trailing}
         </>
       }
     >
       <div className="flex items-end">
-        {prefix ? <span className="select-none pb-1.5 pl-3.5 pt-[1.45rem] t-ui text-n-600">{prefix}</span> : null}
+        {prefix ? <span className="select-none pb-2.5 pl-4 pt-6 text-[length:var(--fs-ui)] leading-[1.45] font-medium text-n-600">{prefix}</span> : null}
         <input
           id={fieldId}
           value={value}

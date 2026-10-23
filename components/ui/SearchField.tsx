@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { FieldFrame } from "./_FieldFrame";
 import { Icon } from "./Icon";
 
 export interface SearchFieldProps {
@@ -38,14 +39,11 @@ export function SearchField({
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
   return (
-    <div
-      data-focused={focused || undefined}
-      className={`group/search relative flex h-10 items-center gap-2 rounded-md border border-border bg-surface px-3 shadow-[var(--shadow-inset)] transition-[border-color,box-shadow,width] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:border-n-300 data-[focused]:border-primary-line data-[focused]:shadow-[var(--focus-ring)] ${className}`}
-    >
+    <FieldFrame focused={focused} className={`flex h-11 items-center gap-2 px-3.5 ${className}`}>
       <Icon
         name="search"
         size={18}
-        className="text-n-500 transition-colors group-data-[focused]/search:text-primary"
+        className="relative text-n-500 transition-colors duration-[var(--dur-base)] group-focus-within/box:text-primary"
       />
       <input
         type="search"
@@ -65,7 +63,7 @@ export function SearchField({
             schedule("", true);
           }
         }}
-        className="h-full min-w-0 flex-1 bg-transparent t-ui outline-none placeholder:text-n-400 focus-visible:shadow-none [&::-webkit-search-cancel-button]:hidden"
+        className="relative h-full min-w-0 flex-1 bg-transparent text-[length:var(--fs-ui)] font-medium outline-none placeholder:font-normal placeholder:text-n-400 [&::-webkit-search-cancel-button]:hidden"
       />
       {text ? (
         <button
@@ -75,11 +73,11 @@ export function SearchField({
             setText("");
             schedule("", true);
           }}
-          className="flex h-6 w-6 animate-pop-in items-center justify-center rounded-full text-n-500 transition-colors hover:bg-ink-soft hover:text-text"
+          className="relative flex h-6 w-6 animate-pop-in items-center justify-center rounded-full text-n-500 transition-colors hover:bg-ink-soft hover:text-text"
         >
           <Icon name="x" size={14} />
         </button>
       ) : null}
-    </div>
+    </FieldFrame>
   );
 }

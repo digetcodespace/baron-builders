@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef } from "react";
 import { useControllable } from "./_hooks";
+import { FieldFrame } from "./_FieldFrame";
 import { AnimatedNumber } from "./AnimatedNumber";
 import { Icon } from "./Icon";
 
@@ -83,6 +84,7 @@ export function NumberStepper({
       <p id={id} className="mb-1.5 t-label text-n-600">
         {label}
       </p>
+      <FieldFrame className="inline-flex p-1">
       <div
         role="group"
         aria-labelledby={id}
@@ -95,7 +97,7 @@ export function NumberStepper({
             bump(-step);
           }
         }}
-        className="inline-flex items-center gap-1 rounded-md border border-border bg-surface p-1 shadow-[var(--shadow-inset)] focus-within:border-primary-line focus-within:shadow-[var(--focus-ring)]"
+        className="relative inline-flex items-center gap-1"
       >
         {button(-step, "minus", `Decrease ${label}`, count <= min)}
         <div
@@ -112,6 +114,7 @@ export function NumberStepper({
         </div>
         {button(step, "plus", `Increase ${label}`, count >= max)}
       </div>
+      </FieldFrame>
     </div>
   );
 }

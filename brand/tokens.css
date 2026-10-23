@@ -55,6 +55,8 @@
   --ease-out:cubic-bezier(.22,1,.36,1);
   --ease-spring:cubic-bezier(.34,1.32,.64,1);
   --ease-in-out:cubic-bezier(.65,0,.35,1);
+  --ease-smooth:cubic-bezier(.4,0,.2,1);   /* soft start and soft landing: fields, labels */
+  --ease-draw:cubic-bezier(.65,0,.35,1);   /* a line drawing across */
   --z-sticky:20; --z-tooltip:40; --z-banner:50; --z-toast:60; --z-overlay:70; --z-popover:80;
 
   /* ---------- Surfaces, rings, depth (app UI) ---------- */
@@ -76,8 +78,9 @@
   --shadow-field-focus:inset 0 1px 2px rgb(16 17 20/.05),0 0 0 4px color-mix(in srgb,var(--primary) 16%,transparent);
   --shadow-field-error:inset 0 1px 2px rgb(16 17 20/.05),0 0 0 4px color-mix(in srgb,var(--bad) 14%,transparent);
   --sheen:linear-gradient(100deg,transparent,rgb(255 255 255/.34),transparent);
-  --ripple-light:rgb(255 255 255/.34);
-  --ripple-dark:rgb(16 17 20/.10);
+  --ring-soft:color-mix(in srgb,var(--primary) 15%,transparent);
+  --ring-soft-bad:color-mix(in srgb,var(--bad) 14%,transparent);
+  --focus-inset:inset 0 0 0 2px var(--surface),inset 0 0 0 4px var(--baron-ink);
   --slant:7px;
 }
 

@@ -67,7 +67,7 @@ export function DateField({ label, value, defaultValue, onChange, min, max, hint
           aria-expanded={open}
           disabled={disabled}
           onClick={() => setOpen((v) => !v)}
-          className="block w-full truncate bg-transparent px-3.5 pb-1.5 pt-[1.45rem] text-left t-ui text-text outline-none focus-visible:shadow-none disabled:cursor-not-allowed"
+          className="block w-full truncate bg-transparent px-4 pb-2.5 pt-6 text-left text-[length:var(--fs-ui)] leading-[1.45] font-medium text-text outline-none disabled:cursor-not-allowed"
         >
           {display(selected) || <span className="text-transparent">Pick a date</span>}
         </button>

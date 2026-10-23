@@ -25,7 +25,7 @@ import { Grid, Row, Section, Specimen } from "./GalleryParts";
 export function ActionsSection() {
   const [loading, setLoading] = useState(false);
   return (
-    <Section id="actions" title="Actions" blurb="Hover a button and a slanted slab (the logo's ground slab) wipes across it, then exits the other side when you leave. Press and a ripple spreads from exactly where you clicked while the button springs down. Icons slide forward. Loading shows moving stripes.">
+    <Section id="actions" title="Actions" blurb="Buttons are cut in the shape of the logo's ground slab, not a generic rounded rectangle. Hover only shifts color, so nothing jumps. Icons ease forward. Loading shows moving stripes.">
       <Grid>
         <Specimen name="Button variants">
           <Row>

@@ -72,7 +72,6 @@
   --animate-march: march 700ms linear infinite;
   --animate-check-pop: check-pop var(--dur-base) var(--ease-spring) both;
   --animate-page-in: page-in 380ms var(--ease-out) both;
-  --animate-ripple: ripple 700ms var(--ease-out) both;
   --animate-expand: expand var(--dur-base) var(--ease-out) both;
 
   @keyframes pop-in {
@@ -135,10 +134,6 @@
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: none; }
   }
-  @keyframes ripple {
-    from { transform: scale(0); opacity: 0.9; }
-    to { transform: scale(1); opacity: 0; }
-  }
   @keyframes expand { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 }
 
@@ -147,12 +142,33 @@
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
-    scrollbar-width: thin;
-    scrollbar-color: var(--n-300) transparent;
   }
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--n-300) transparent;
+  /* Slim, warm scrollbars with no arrow buttons. Firefox falls back to the standard properties. */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--n-300);
+    background-clip: content-box;
+    border: 3px solid transparent;
+    border-radius: 999px;
+    transition: background-color var(--dur-fast) var(--ease-smooth);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--n-400);
+  }
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--n-300) transparent;
+    }
   }
   ::selection {
     background: color-mix(in srgb, var(--primary) 22%, transparent);
@@ -200,21 +216,6 @@
   input:focus-visible,
   textarea:focus-visible {
     outline: none;
-  }
-}
-
-/* Buttons: lift and settle with a spring, but snap down fast on press. */
-@layer components {
-  .btn-surface {
-    transition:
-      transform var(--dur-base) var(--ease-spring),
-      box-shadow var(--dur-base) var(--ease-out),
-      background-color var(--dur-base) var(--ease-out),
-      border-color var(--dur-base) var(--ease-out),
-      color var(--dur-base) var(--ease-out);
-  }
-  .btn-surface:active {
-    transition-duration: 80ms;
   }
 }
 

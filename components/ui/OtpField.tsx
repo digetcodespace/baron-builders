@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, type ClipboardEvent, type KeyboardEvent } from "react";
+import { FieldFrame } from "./_FieldFrame";
 import { FieldError } from "./FieldError";
 
 export interface OtpFieldProps {
@@ -75,11 +76,11 @@ export function OtpField({
       <p className="mb-2 t-label text-n-600">{label}</p>
       <div role="group" aria-label={label} className="flex gap-1.5 sm:gap-2">
         {digits.map((digit, index) => (
-          <div
+          <FieldFrame
             key={index}
-            data-focused={focusIndex === index || undefined}
-            data-invalid={Boolean(error) || undefined}
-            className="group/otp relative h-14 w-full max-w-11 overflow-hidden rounded-md border border-border bg-surface shadow-[var(--shadow-inset)] transition-[border-color,box-shadow,background-color] duration-[var(--dur-fast)] data-[focused]:border-primary-line data-[focused]:shadow-[var(--focus-ring)] data-[invalid]:animate-shake data-[invalid]:border-bad"
+            focused={focusIndex === index}
+            invalid={Boolean(error)}
+            className="h-14 w-full max-w-11 overflow-hidden"
           >
             <input
               ref={(el) => {
@@ -106,13 +107,9 @@ export function OtpField({
               }}
               onKeyDown={(event) => onKeyDown(index, event)}
               onPaste={(event) => onPaste(index, event)}
-              className={`h-full w-full bg-transparent text-center font-display text-[length:var(--fs-h3)] font-extrabold text-text outline-none focus-visible:shadow-none ${digit ? "animate-pop-in" : ""}`}
+              className={`h-full w-full bg-transparent text-center font-display text-[length:var(--fs-h3)] font-extrabold text-text outline-none relative ${digit ? "animate-pop-in" : ""}`}
             />
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 bottom-0 h-[3px] origin-left scale-x-0 bg-primary transition-transform duration-[var(--dur-base)] ease-[var(--ease-out)] [clip-path:polygon(0_0,calc(100%-var(--slant))_0,100%_100%,0_100%)] group-data-[focused]/otp:scale-x-100 group-data-[invalid]/otp:scale-x-100 group-data-[invalid]/otp:bg-bad"
-            />
-          </div>
+          </FieldFrame>
         ))}
       </div>
       <FieldError message={error} />

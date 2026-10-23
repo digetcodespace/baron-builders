@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode, type Ref } from "react";
+import { FieldFrame } from "./_FieldFrame";
 import { Icon } from "./Icon";
 
 export interface FieldShellProps {
@@ -24,17 +25,20 @@ export interface FieldShellProps {
   onBoxPointerDown?: () => void;
 }
 
-/** Class for the actual <input>/<textarea> sitting inside the shell. The shell draws every ring, so the control draws none. */
+/**
+ * Class for the actual <input>/<textarea> inside the shell. The field is 56px
+ * tall: 24px above the text for the floating label, the text line, then 10px
+ * below. The frame draws every ring, so the control draws none.
+ */
 export const FIELD_CONTROL =
-  "block w-full min-w-0 bg-transparent px-3.5 pb-1.5 pt-[1.45rem] t-ui text-text outline-none placeholder:text-transparent focus:placeholder:text-n-400 disabled:cursor-not-allowed [&:-webkit-autofill]:[-webkit-text-fill-color:var(--text)] [&:-webkit-autofill]:[transition:background-color_9999s_ease-out]";
+  "block w-full min-w-0 bg-transparent px-4 pb-2.5 pt-6 text-[length:var(--fs-ui)] leading-[1.45] font-medium text-text outline-none placeholder:text-transparent focus:placeholder:text-n-400 disabled:cursor-not-allowed [&:-webkit-autofill]:[-webkit-text-fill-color:var(--text)] [&:-webkit-autofill]:[transition:background-color_9999s_ease-out]";
 
-const EASE = "duration-[var(--dur-base)] ease-[var(--ease-out)]";
+const EASE = "duration-[360ms] ease-[var(--ease-smooth)]";
 
 /**
- * The shared frame for every labeled control: a floating label that glides up,
- * a focus ring that fades in, and the signature "slab": a short slanted red
- * bar that draws itself along the bottom edge (the logo's ground slab). Hint
- * and error slide open below without pushing the page around abruptly.
+ * The shared layout for every labeled control: a floating label that glides
+ * up, optional leading and trailing slots, and a hint or error that slides
+ * open below. The focus treatment itself lives in `FieldFrame`.
  */
 export function FieldShell({
   id,
@@ -53,8 +57,8 @@ export function FieldShell({
   onBoxPointerDown,
 }: FieldShellProps) {
   const raised = focused || filled;
-  const invalid = Boolean(error);
   const message = error ?? hint;
+  const describedBy = error ? `${id}-error` : hint ? `${id}-hint` : undefined;
   // Remember the last error so its text can fade out while the row collapses.
   const [lastError, setLastError] = useState<string | null>(null);
   useEffect(() => {
@@ -63,45 +67,44 @@ export function FieldShell({
     return () => cancelAnimationFrame(frame);
   }, [error]);
   const closingError = !message ? lastError : null;
-  const describedBy = error ? `${id}-error` : hint ? `${id}-hint` : undefined;
 
-  // The label only ever moves with transform, so it glides on the GPU and never reflows.
+  // The label moves with transform only, so it glides on the GPU and never reflows.
+  // Resting: vertically centered (single line) or on the first line (multi-line).
+  // Raised: shrinks to 78% and sits in the top 24px, left-aligned with the text.
   const labelPosition = multiline
     ? raised
-      ? "top-4 -translate-y-2.5 scale-[.78]"
-      : "top-4 translate-y-0 scale-100"
+      ? "top-[1.15rem] -translate-y-[0.8rem] scale-[.78]"
+      : "top-[1.15rem] translate-y-0 scale-100"
     : raised
-      ? "top-1/2 -translate-y-[calc(50%+9px)] scale-[.78]"
+      ? "top-1/2 -translate-y-[calc(50%+0.8rem)] scale-[.78]"
       : "top-1/2 -translate-y-1/2 scale-100";
 
   return (
     <div className={`w-full ${className}`}>
-      <div
-        ref={boxRef}
+      <FieldFrame
+        boxRef={boxRef}
         onPointerDown={onBoxPointerDown}
-        data-focused={focused || undefined}
-        data-invalid={invalid || undefined}
-        data-disabled={disabled || undefined}
-        className={`group/box relative flex items-stretch overflow-hidden rounded-md border border-border bg-surface shadow-[var(--shadow-field)] transition-[border-color,box-shadow,background-color] ${EASE} hover:border-n-300 data-[focused]:border-primary-line data-[focused]:shadow-[var(--shadow-field-focus)] data-[invalid]:animate-shake data-[invalid]:border-bad data-[invalid]:shadow-[var(--shadow-field-error)] data-[disabled]:bg-n-50 data-[disabled]:opacity-60`}
+        focused={focused}
+        invalid={Boolean(error)}
+        disabled={disabled}
+        className="flex min-h-14 items-stretch"
       >
         {leading ? (
-          <div className={`flex items-center pl-3.5 text-n-500 transition-colors ${EASE} group-data-[focused]/box:text-primary`}>{leading}</div>
+          <div className={`relative flex items-center pl-4 text-n-500 transition-colors ${EASE} group-data-[focused]/box:text-primary group-focus-within/box:text-primary`}>
+            {leading}
+          </div>
         ) : null}
         <div className="relative min-w-0 flex-1" aria-describedby={describedBy}>
           {children}
           <label
             htmlFor={id}
-            className={`pointer-events-none absolute left-3.5 max-w-[calc(100%-1.75rem)] origin-left truncate text-muted will-change-transform transition-[transform,color] ${EASE} t-ui ${labelPosition} ${raised ? "text-n-600" : ""} group-data-[focused]/box:text-primary! group-data-[invalid]/box:text-bad!`}
+            className={`pointer-events-none absolute left-4 max-w-[calc(100%-2rem)] origin-left truncate text-muted will-change-transform transition-[transform,color] ${EASE} t-ui ${labelPosition} ${raised ? "text-n-600" : ""} group-data-[focused]/box:text-primary! group-focus-within/box:text-primary! group-data-[invalid]/box:text-bad!`}
           >
             {label}
           </label>
         </div>
-        {trailing ? <div className="flex items-center pr-2 text-n-500">{trailing}</div> : null}
-        <span
-          aria-hidden="true"
-          className={`pointer-events-none absolute bottom-0 left-3 right-3 h-[3px] origin-left scale-x-0 rounded-t-full bg-primary opacity-0 transition-[transform,opacity] ${EASE} group-data-[focused]/box:scale-x-100 group-data-[focused]/box:opacity-100 group-data-[invalid]/box:scale-x-100 group-data-[invalid]/box:bg-bad group-data-[invalid]/box:opacity-100`}
-        />
-      </div>
+        {trailing ? <div className="relative flex items-center pr-3 text-n-500">{trailing}</div> : null}
+      </FieldFrame>
       <div
         aria-live="polite"
         aria-hidden={!message}
@@ -109,16 +112,16 @@ export function FieldShell({
       >
         <div className="overflow-hidden">
           {error ? (
-            <p id={`${id}-error`} role="alert" className="mt-1.5 flex items-center gap-1.5 t-small text-bad!">
+            <p id={`${id}-error`} role="alert" className="mt-2 flex items-center gap-1.5 t-small text-bad!">
               <Icon name="alert-circle" size={14} />
               {error}
             </p>
           ) : hint ? (
-            <p id={`${id}-hint`} className="mt-1.5 t-small">
+            <p id={`${id}-hint`} className="mt-2 t-small">
               {hint}
             </p>
           ) : closingError ? (
-            <p className="mt-1.5 flex items-center gap-1.5 t-small text-bad!">
+            <p className="mt-2 flex items-center gap-1.5 t-small text-bad!">
               <Icon name="alert-circle" size={14} />
               {closingError}
             </p>
