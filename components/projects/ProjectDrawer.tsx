@@ -18,9 +18,11 @@ interface StageDraft {
 let counter = 0;
 const newKey = () => `new-${++counter}`;
 
-/** The first swatch no stage uses yet, so each stage starts with a color of its own. */
+/** A random swatch no stage uses yet, so each new stage starts with a color of its own. Once all 25 are taken, any swatch. */
 function unusedColor(taken: string[]): string {
-  return (swatchColors.find((c) => !taken.includes(c.hex)) ?? swatchColors[taken.length % swatchColors.length]).hex;
+  const free = swatchColors.filter((c) => !taken.includes(c.hex));
+  const pool = free.length ? free : swatchColors;
+  return pool[Math.floor(Math.random() * pool.length)].hex;
 }
 
 const blankStage = (taken: string[]): StageDraft => ({ key: newKey(), name: "", cutoffDate: null, color: unusedColor(taken) });
