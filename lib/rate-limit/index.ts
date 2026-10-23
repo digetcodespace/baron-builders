@@ -35,6 +35,8 @@ const SPECS = {
   "otp-verify": { limit: 10, windowSeconds: 600 },
   invite: { limit: 30, windowSeconds: 3600 },
   "people-read": { limit: 120, windowSeconds: 60 },
+  "projects-read": { limit: 120, windowSeconds: 60 },
+  "projects-write": { limit: 30, windowSeconds: 60 },
 } as const satisfies Record<string, LimitSpec>;
 
 export type LimiterName = keyof typeof SPECS;

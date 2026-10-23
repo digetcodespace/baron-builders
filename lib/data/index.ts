@@ -17,6 +17,7 @@ export { createAuthUser, endSession, sendSignInCode, verifySignInCode } from "./
 export { insertAuditEntry } from "./audit";
 export { addHouseBuyer, getHouse, isHouseBuyer, listHouses } from "./houses";
 export type { ListHousesParams } from "./houses";
+export { insertProject, listProjects } from "./projects";
 export { getProfile, getProfileByEmail, listProfiles } from "./profiles";
 export { addVendorUser, getVendor, listVendors } from "./vendors";
 export type { AuditEntryInput, HouseRow, ItemKind, ProfileRow, ProjectRow, UserRole, VendorRow, VendorStage } from "./types";

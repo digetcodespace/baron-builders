@@ -91,6 +91,8 @@ await (async () => {
     check("signed-out visitor is redirected away from /staff", r.status === 307 && /sign-in/.test(r.location ?? ""), `${r.status} ${r.location}`);
     r = await call(anon, "GET", "/api/people");
     check("signed-out visitor gets 401 from /api/people", r.status === 401);
+    r = await call(anon, "GET", "/api/projects");
+    check("signed-out visitor gets 401 from /api/projects", r.status === 401);
     r = await call(anon, "POST", "/api/invites", { email: "x@test.invalid", fullName: "X", role: "staff" });
     check("signed-out visitor cannot invite", r.status === 401);
 
@@ -119,6 +121,12 @@ await (async () => {
     check("staff can open /staff and sees the dashboard", r.status === 200 && /Dashboard/.test(r.text) && !/NEXT_REDIRECT/.test(r.text), String(r.status));
     r = await call(staffJar, "GET", "/api/people");
     check("staff can list people", r.status === 200 && r.json?.items?.some((p) => p.email === staffEmail));
+    r = await call(staffJar, "POST", "/api/projects", { name: "   " });
+    check("a blank project name is refused with a field error", r.status === 400 && r.json?.error?.field === "name", `${r.status} ${JSON.stringify(r.json)}`);
+    r = await call(staffJar, "POST", "/api/projects", { name: `E2E Project ${stamp}` });
+    check("staff can create a project", r.status === 201 && r.json?.name === `E2E Project ${stamp}`, `${r.status} ${JSON.stringify(r.json)}`);
+    r = await call(staffJar, "GET", "/api/projects");
+    check("the new project is in the list", r.status === 200 && r.json?.items?.some((p) => p.name === `E2E Project ${stamp}`));
     r = await call(staffJar, "GET", "/sign-in");
     check("a signed-in person visiting /sign-in is sent to their portal", r.status === 307 && /staff/.test(r.location ?? ""), `${r.status} ${r.location}`);
 
@@ -135,7 +143,7 @@ await (async () => {
     r = await call(staffJar, "POST", "/api/invites", { email: buyerEmail, fullName: "E2E Buyer", role: "buyer", houseId: house.data.id });
     check("staff can invite a buyer to a house", r.status === 201 && r.json?.created === true, `${r.status} ${JSON.stringify(r.json)}`);
     if (r.json?.userId) created.users.push(r.json.userId);
-    check("with no email provider configured the invite says so and offers a link", r.json?.emailSent === false && /sign-in\?email=/.test(r.json?.signInUrl ?? ""));
+    check("with no email provider configured the invite says so and offers a link", r.json?.emailSent === false && /sign-in\?for=buyer&email=/.test(r.json?.signInUrl ?? ""));
     r = await call(staffJar, "POST", "/api/invites", { email: buyerEmail, fullName: "E2E Buyer", role: "staff" });
     check("the same email cannot be invited under a different role", r.status === 409, String(r.status));
     r = await call(staffJar, "POST", "/api/invites", { email: `x-${stamp}@test.invalid`, fullName: "No House", role: "buyer" });
@@ -154,6 +162,10 @@ await (async () => {
     check("buyer is turned away from /staff", r.status === 307 && /buyer/.test(r.location ?? ""), `${r.status} ${r.location}`);
     r = await call(buyerJar, "GET", "/api/people");
     check("buyer cannot list people", r.status === 403, String(r.status));
+    r = await call(buyerJar, "GET", "/api/projects");
+    check("buyer cannot list projects", r.status === 403, String(r.status));
+    r = await call(buyerJar, "POST", "/api/projects", { name: "Nope" });
+    check("buyer cannot create a project", r.status === 403, String(r.status));
     r = await call(buyerJar, "POST", "/api/invites", { email: `y-${stamp}@test.invalid`, fullName: "Y", role: "staff" });
     check("buyer cannot invite anyone", r.status === 403, String(r.status));
     r = await call(buyerJar, "GET", "/api/houses");
@@ -174,6 +186,7 @@ await (async () => {
   } finally {
     // Cleanup everything the test created.
     try {
+      await admin.from("projects").delete().like("name", "E2E Project %");
       if (created.projectId) await admin.from("projects").delete().eq("id", created.projectId);
       await admin.from("audit_log").delete().like("details->>email", "%@test.invalid");
       for (const id of created.users) await admin.auth.admin.deleteUser(id);
