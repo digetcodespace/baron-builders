@@ -1,3 +1,4 @@
 # lib/data list* functions that do not return Page<T>. Format: <file>#<function>   # reason
 # A new exception goes here with a reason (why every row is needed, and which end a .limit() keeps).
 # Prefer paginating. This list should stay empty or shrink.
+lib/data/projectStatuses.ts#listProjectStatuses   # bounded per-parent child set (a project's handful of stages); the ring needs every stage to rank a house, and there is no .limit() so nothing is truncated

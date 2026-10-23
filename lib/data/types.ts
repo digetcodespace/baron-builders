@@ -26,6 +26,19 @@ export interface ProjectRow {
   created_at: string;
 }
 
+export interface ProjectStageRow {
+  id: string;
+  project_id: string;
+  name: string;
+  position: number;
+  cutoff_date: string | null;
+}
+
+/** A project with its stages, in order. */
+export interface ProjectDetail extends ProjectRow {
+  stages: ProjectStageRow[];
+}
+
 export interface HouseRow {
   id: string;
   project_id: string;
@@ -34,6 +47,24 @@ export interface HouseRow {
   lot: string;
   address: string | null;
   created_at: string;
+}
+
+export interface ProjectStatusRow {
+  id: string;
+  project_id: string;
+  name: string;
+  position: number;
+}
+
+/** Where a house is in its project's stages: its status name, its place in the order, and how many stages there are. */
+export interface HouseStage {
+  name: string;
+  step: number;
+  steps: number;
+}
+
+export interface HouseWithStage extends HouseRow {
+  stage: HouseStage | null;
 }
 
 export interface AuditEntryInput {

@@ -4,5 +4,5 @@ export { email, inviteInput, listPageInput, requestCodeInput, verifyCodeInput } 
 export type { InviteInput } from "./auth";
 export { houseIdInput, listHousesInput } from "./houses";
 export type { ListHousesInput } from "./houses";
-export { createProjectInput } from "./projects";
-export type { CreateProjectInput } from "./projects";
+export { MAX_STAGES, projectIdInput, saveProjectInput } from "./projects";
+export type { SaveProjectInput } from "./projects";

@@ -72,6 +72,10 @@ Also adds `vendors.email` and `vendors.phone` (the contact details a buyer sees)
 
 Supabase Auth inserts a new user first and attaches `app_metadata` (where the role lives) in a second step, so a trigger that only ran on INSERT never saw the role and invited people got an account with no profile. `handle_new_user()` now runs on **insert or update of `raw_app_meta_data` / `raw_user_meta_data`** and upserts the profile, keeping role, email, and name in step with the account. Covered by the stranger test (the profile appears the moment a role is attached).
 
+### [20261024000001_save_project.sql](supabase/migrations/20261024000001_save_project.sql)
+
+`save_project(project_id, name, stages jsonb)` creates or updates a project and its ordered stages in one transaction (security invoker, so staff RLS decides who may call it). Stages arrive in display order: one with an `id` is renamed and moved, one without is added, and any existing stage not listed is removed (the foreign key from `houses.status_id` refuses if a house is still in it). Positions are renumbered 1..n, and the deferred `unique (project_id, position)` means a reorder never collides mid-save. Stages are unlimited (the service caps a request at 200). **Applied** with `supabase db push`; covered by the e2e checks.
+
 ## Planned (next migration)
 
 Invoices and revisions (a change after signing produces a revised invoice or a credit), payments, messages and documents, and reminders.

@@ -16,6 +16,8 @@ export { Calendar } from "./Calendar";
 export { Card, CardFooter, CardHeader } from "./Card";
 export { Checkbox } from "./Checkbox";
 export { ConfirmDialog } from "./ConfirmDialog";
+export { SortableList } from "./SortableList";
+export type { SortableListProps } from "./SortableList";
 export { CurrencyField } from "./CurrencyField";
 export { DataTable } from "./DataTable";
 export type { Column, SortState } from "./DataTable";

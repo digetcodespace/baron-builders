@@ -1,9 +1,10 @@
 import type { Db } from "./_supabase";
-import { toDataError } from "./_errors";
+import { DataError, toDataError } from "./_errors";
 import { capLimit, descCursorOrPredicate, toPage, type Page, type PageParams } from "./_pagination";
-import type { ProjectRow } from "./types";
+import type { ProjectDetail, ProjectRow, ProjectStageRow } from "./types";
 
 const PROJECT_COLUMNS = "id, name, created_at";
+const STAGE_COLUMNS = "id, project_id, name, position, cutoff_date";
 
 export async function listProjects(db: Db, params: PageParams = {}): Promise<Page<ProjectRow>> {
   const limit = capLimit(params.limit);
@@ -20,8 +21,39 @@ export async function listProjects(db: Db, params: PageParams = {}): Promise<Pag
   return toPage((data ?? []) as ProjectRow[], limit);
 }
 
-export async function insertProject(db: Db, name: string): Promise<ProjectRow> {
-  const { data, error } = await db.from("projects").insert({ name }).select(PROJECT_COLUMNS).single();
+/** A project with its stages in order. RLS decides visibility: a stranger gets null. */
+export async function getProjectDetail(db: Db, projectId: string): Promise<ProjectDetail | null> {
+  const { data: project, error } = await db.from("projects").select(PROJECT_COLUMNS).eq("id", projectId).maybeSingle();
   if (error) throw toDataError(error, "project");
-  return data as ProjectRow;
+  if (!project) return null;
+  const { data: stages, error: stagesError } = await db
+    .from("project_statuses")
+    .select(STAGE_COLUMNS)
+    .eq("project_id", projectId)
+    .order("position", { ascending: true });
+  if (stagesError) throw toDataError(stagesError, "project stages");
+  return { ...(project as ProjectRow), stages: (stages ?? []) as ProjectStageRow[] };
+}
+
+export interface SaveProjectInput {
+  projectId?: string;
+  name: string;
+  /** In display order. An id keeps and renames an existing stage; none adds one; a missing one is removed. */
+  stages: { id?: string; name: string; cutoffDate?: string | null }[];
+}
+
+/** Create or update a project and its stages in one transaction (`save_project`). Returns the project id. */
+export async function saveProject(db: Db, input: SaveProjectInput): Promise<string> {
+  const { data, error } = await db.rpc("save_project", {
+    p_project_id: input.projectId ?? null,
+    p_name: input.name,
+    p_stages: input.stages.map((s) => ({ id: s.id ?? null, name: s.name, cutoff_date: s.cutoffDate ?? null })),
+  });
+  if (error) {
+    if (error.code === "23503") {
+      throw new DataError("conflict", "A stage that still has houses in it cannot be removed. Move those houses to another stage first.", { cause: error });
+    }
+    throw toDataError(error, "project");
+  }
+  return data as string;
 }

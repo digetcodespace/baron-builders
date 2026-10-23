@@ -14,17 +14,21 @@ export interface DrawerProps {
   footer?: ReactNode;
   /** `right` is a side panel on desktop and a bottom sheet on phones. */
   side?: "right" | "bottom";
+  /** Width of the right-hand panel on desktop. */
+  size?: "md" | "lg";
+  /** Block Escape and backdrop dismissal while work is in flight. */
+  dismissible?: boolean;
 }
 
 /** Slide-in panel for a house file, message thread, or any detail that should not leave the page. */
-export function Drawer({ open, onClose, title, description, children, footer, side = "right" }: DrawerProps) {
+export function Drawer({ open, onClose, title, description, children, footer, side = "right", size = "md", dismissible = true }: DrawerProps) {
   const titleId = useId();
   const panel = useRef<HTMLDivElement>(null);
   const { mounted, state } = usePresence(open, 220);
 
   useScrollLock(mounted);
   useFocusTrap(panel, open && mounted);
-  useEscape(onClose, open);
+  useEscape(() => dismissible && onClose(), open);
 
   if (!mounted) return null;
   const right = side === "right";
@@ -34,7 +38,7 @@ export function Drawer({ open, onClose, title, description, children, footer, si
         <div
           aria-hidden="true"
           data-state={state}
-          onClick={onClose}
+          onClick={() => dismissible && onClose()}
           className="absolute inset-0 bg-scrim backdrop-blur-[2px] data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in"
         />
         <div
@@ -46,7 +50,7 @@ export function Drawer({ open, onClose, title, description, children, footer, si
           data-state={state}
           className={`absolute flex flex-col bg-surface shadow-overlay outline-none ${
             right
-              ? "inset-y-0 right-0 w-full max-w-md border-l border-border data-[state=closed]:animate-slide-out-right data-[state=open]:animate-slide-in-right"
+              ? `inset-y-0 right-0 w-full ${size === "lg" ? "max-w-xl" : "max-w-md"} border-l border-border data-[state=closed]:animate-slide-out-right data-[state=open]:animate-slide-in-right`
               : "inset-x-0 bottom-0 max-h-[85vh] rounded-t-xl border-t border-border data-[state=closed]:animate-slide-out-down data-[state=open]:animate-slide-in-up"
           }`}
         >

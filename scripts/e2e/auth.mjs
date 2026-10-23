@@ -7,7 +7,9 @@ import { SUPABASE_URL as URL_, readServiceKey } from "../lib/supabase-admin.mjs"
 
 const PUBLISHABLE = "sb_publishable_zbL5DoHB4WpoMsHseCUFIA_4EollD3h";
 const PORT = 3057;
-const BASE = `http://localhost:${PORT}`;
+// Set E2E_BASE_URL to test a server that is already running (for example a production build) instead of starting a dev server.
+const EXTERNAL = process.env.E2E_BASE_URL;
+const BASE = EXTERNAL ?? `http://localhost:${PORT}`;
 const stamp = Date.now();
 const results = [];
 const check = (name, ok, detail = "") => {
@@ -55,7 +57,7 @@ async function waitForServer() {
 await (async () => {
   const serviceKey = readServiceKey();
   const admin = createClient(URL_, serviceKey, { auth: { persistSession: false } });
-  const server = spawn("npm.cmd", ["run", "dev", "--", "-p", String(PORT)], {
+  const server = EXTERNAL ? null : spawn("npm.cmd", ["run", "dev", "--", "-p", String(PORT)], {
     cwd: process.cwd(),
     shell: true,
     env: {
@@ -121,10 +123,18 @@ await (async () => {
     check("staff can open /staff and sees the dashboard", r.status === 200 && /Dashboard/.test(r.text) && !/NEXT_REDIRECT/.test(r.text), String(r.status));
     r = await call(staffJar, "GET", "/api/people");
     check("staff can list people", r.status === 200 && r.json?.items?.some((p) => p.email === staffEmail));
-    r = await call(staffJar, "POST", "/api/projects", { name: "   " });
+    r = await call(staffJar, "POST", "/api/projects", { name: "   ", stages: [] });
     check("a blank project name is refused with a field error", r.status === 400 && r.json?.error?.field === "name", `${r.status} ${JSON.stringify(r.json)}`);
-    r = await call(staffJar, "POST", "/api/projects", { name: `E2E Project ${stamp}` });
-    check("staff can create a project", r.status === 201 && r.json?.name === `E2E Project ${stamp}`, `${r.status} ${JSON.stringify(r.json)}`);
+    r = await call(staffJar, "POST", "/api/projects", { name: `E2E Project ${stamp}`, stages: [{ name: "Contract signed" }, { name: "Framing" }, { name: "Finishes" }] });
+    check("staff can create a project with stages", r.status === 201 && r.json?.name === `E2E Project ${stamp}` && r.json?.stages?.map((x) => x.name).join() === "Contract signed,Framing,Finishes", `${r.status} ${JSON.stringify(r.json)}`);
+    const made = r.json;
+    r = await call(staffJar, "POST", "/api/projects", { name: "Dupe", stages: [{ name: "A" }, { name: "a" }] });
+    check("two stages with the same name are refused", r.status === 400, String(r.status));
+    const [s1, s2, s3] = made.stages;
+    r = await call(staffJar, "PUT", `/api/projects/${made.id}`, { name: `E2E Project ${stamp}`, stages: [{ id: s3.id, name: "Finishes" }, { id: s1.id, name: "Contract signed (renamed)" }, { name: "Punch list" }] });
+    check("reordering, renaming, adding and removing stages saves in one go", r.status === 200 && r.json?.stages?.map((x) => x.name).join() === "Finishes,Contract signed (renamed),Punch list" && r.json.stages[0].id === s3.id && !r.json.stages.some((x) => x.id === s2.id), `${r.status} ${JSON.stringify(r.json?.stages?.map((x) => x.name))}`);
+    r = await call(staffJar, "GET", `/api/projects/${made.id}`);
+    check("the saved order is read back", r.status === 200 && r.json?.stages?.map((x) => x.position).join() === "1,2,3");
     r = await call(staffJar, "GET", "/api/projects");
     check("the new project is in the list", r.status === 200 && r.json?.items?.some((p) => p.name === `E2E Project ${stamp}`));
     r = await call(staffJar, "GET", "/sign-in");
@@ -164,7 +174,7 @@ await (async () => {
     check("buyer cannot list people", r.status === 403, String(r.status));
     r = await call(buyerJar, "GET", "/api/projects");
     check("buyer cannot list projects", r.status === 403, String(r.status));
-    r = await call(buyerJar, "POST", "/api/projects", { name: "Nope" });
+    r = await call(buyerJar, "POST", "/api/projects", { name: "Nope", stages: [] });
     check("buyer cannot create a project", r.status === 403, String(r.status));
     r = await call(buyerJar, "POST", "/api/invites", { email: `y-${stamp}@test.invalid`, fullName: "Y", role: "staff" });
     check("buyer cannot invite anyone", r.status === 403, String(r.status));
@@ -195,8 +205,8 @@ await (async () => {
     } catch (error) {
       check("cleanup", false, String(error));
     }
-    server.kill();
-    try { execSync(`powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort ${PORT} -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }"`); } catch { /* already stopped */ }
+    server?.kill();
+    if (!EXTERNAL) try { execSync(`powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort ${PORT} -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }"`); } catch { /* already stopped */ }
     const failed = results.filter((x) => !x.ok).length;
     console.log(`\n${results.length} checks, ${failed} failed`);
     process.exit(failed ? 1 : 0);

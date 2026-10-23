@@ -18,6 +18,6 @@ export { getHouseById, listHouses } from "./houses";
 export { inviteUser } from "./invites";
 export type { InviteResult } from "./invites";
 export { getMyProfile, listPeople } from "./people";
-export { createProject, listProjects } from "./projects";
+export { getProject, listProjects, saveProjectWithStages } from "./projects";
 export { requestSignInCode, signOut, verifySignInCodeForSession } from "./signIn";
 export { listVendors } from "./vendors";

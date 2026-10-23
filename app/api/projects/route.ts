@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { assertSameOrigin, createRequestContext, readJson, toErrorResponse } from "@/lib/http";
-import { createProject, listProjects } from "@/lib/services";
+import { listProjects, saveProjectWithStages } from "@/lib/services";
 
 export async function GET(req: Request) {
   try {
@@ -14,11 +14,12 @@ export async function GET(req: Request) {
   }
 }
 
+/** Create a project with its stages. */
 export async function POST(req: Request) {
   try {
     assertSameOrigin(req);
     const ctx = await createRequestContext(req);
-    return NextResponse.json(await createProject(ctx, await readJson(req)), { status: 201 });
+    return NextResponse.json(await saveProjectWithStages(ctx, await readJson(req)), { status: 201 });
   } catch (err) {
     return toErrorResponse(err, req);
   }
