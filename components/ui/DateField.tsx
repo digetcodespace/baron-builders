@@ -5,6 +5,7 @@ import { FieldShell } from "./_FieldShell";
 import { useAnchoredPosition, useClickOutside, useControllable, useEscape, usePresence } from "./_hooks";
 import { Calendar, fromIso } from "./Calendar";
 import { Icon } from "./Icon";
+import { IconButton } from "./IconButton";
 import { Portal } from "./Portal";
 
 export interface DateFieldProps {
@@ -12,7 +13,10 @@ export interface DateFieldProps {
   /** `YYYY-MM-DD`, or null. */
   value?: string | null;
   defaultValue?: string | null;
+  /** Called with `YYYY-MM-DD`, or with an empty string when the date is cleared. */
   onChange?: (iso: string) => void;
+  /** Show a clear button once a date is chosen, for dates that are optional. */
+  clearable?: boolean;
   min?: string;
   max?: string;
   hint?: ReactNode;
@@ -27,11 +31,9 @@ function display(iso: string | null) {
 }
 
 /** Labeled date picker with a custom calendar popover. */
-export function DateField({ label, value, defaultValue, onChange, min, max, hint, error, disabled, className }: DateFieldProps) {
+export function DateField({ label, value, defaultValue, onChange, clearable, min, max, hint, error, disabled, className }: DateFieldProps) {
   const id = useId();
-  const [selected, setSelected] = useControllable<string | null>(value, defaultValue ?? null, (v) => {
-    if (v) onChange?.(v);
-  });
+  const [selected, setSelected] = useControllable<string | null>(value, defaultValue ?? null, (v) => onChange?.(v ?? ""));
   const [open, setOpen] = useState(false);
   const boxRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -57,7 +59,14 @@ export function DateField({ label, value, defaultValue, onChange, min, max, hint
         filled={selected !== null}
         boxRef={boxRef}
         className={className}
-        trailing={<Icon name="calendar" size={18} className={open ? "text-primary" : ""} />}
+        trailing={
+          <span className="flex items-center gap-1">
+            {clearable && selected && !disabled ? (
+              <IconButton label="Clear date" icon="x" size="sm" variant="ghost" onClick={() => setSelected(null)} />
+            ) : null}
+            <Icon name="calendar" size={18} className={open ? "text-primary" : ""} />
+          </span>
+        }
       >
         <button
           ref={triggerRef}

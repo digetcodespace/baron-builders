@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Button, Drawer, IconButton, Skeleton, SortableList, TextField } from "@/components/ui";
+import { Button, DateField, Drawer, IconButton, Skeleton, SortableList, TextField } from "@/components/ui";
 import { useToast } from "@/components/providers";
 import { useProjectDetail, useSaveProject } from "@/hooks/useProjects";
 
@@ -71,6 +71,7 @@ export function ProjectDrawer({ open, projectId, onClose, onSaved }: ProjectDraw
   };
 
   const rename = (key: string, value: string) => setStages((current) => current.map((s) => (s.key === key ? { ...s, name: value } : s)));
+  const setDue = (key: string, iso: string) => setStages((current) => current.map((s) => (s.key === key ? { ...s, cutoffDate: iso || null } : s)));
   const remove = (key: string) => setStages((current) => current.filter((s) => s.key !== key));
 
   const save = async () => {
@@ -140,19 +141,21 @@ export function ProjectDrawer({ open, projectId, onClose, onSaved }: ProjectDraw
                     <span aria-hidden="true" className="w-5 shrink-0 text-center font-mono text-[length:var(--fs-label)] text-n-500">
                       {index + 1}
                     </span>
-                    <TextField
-                      label="Stage name"
-                      value={stage.name}
-                      error={rowError(stage.key)}
-                      className="min-w-0 flex-1"
-                      onChange={(e) => rename(stage.key, e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          if (stage.name.trim()) addStageAfter(index);
-                        }
-                      }}
-                    />
+                    <div className="grid min-w-0 flex-1 gap-1.5 sm:grid-cols-[minmax(0,1fr)_11.5rem]">
+                      <TextField
+                        label="Stage name"
+                        value={stage.name}
+                        error={rowError(stage.key)}
+                        onChange={(e) => rename(stage.key, e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            if (stage.name.trim()) addStageAfter(index);
+                          }
+                        }}
+                      />
+                      <DateField label="Due date" value={stage.cutoffDate} clearable onChange={(iso) => setDue(stage.key, iso)} />
+                    </div>
                     <IconButton label="Remove stage" icon="trash" size="sm" variant="ghost" onClick={() => remove(stage.key)} />
                   </div>
                 )}
@@ -164,7 +167,7 @@ export function ProjectDrawer({ open, projectId, onClose, onSaved }: ProjectDraw
             <Button className="mt-3" variant="secondary" size="sm" leftIcon="plus" onClick={() => addStageAfter(stages.length - 1)}>
               Add stage
             </Button>
-            <p className="mt-3 t-small">Press Enter in a stage to add the next one. Stages with no name are skipped.</p>
+            <p className="mt-3 t-small">The due date is the last day for this stage. It is the same for every house type in the project. Press Enter in a stage to add the next one; stages with no name are skipped.</p>
           </section>
         </div>
       )}

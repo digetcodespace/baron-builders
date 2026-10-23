@@ -125,14 +125,16 @@ await (async () => {
     check("staff can list people", r.status === 200 && r.json?.items?.some((p) => p.email === staffEmail));
     r = await call(staffJar, "POST", "/api/projects", { name: "   ", stages: [] });
     check("a blank project name is refused with a field error", r.status === 400 && r.json?.error?.field === "name", `${r.status} ${JSON.stringify(r.json)}`);
-    r = await call(staffJar, "POST", "/api/projects", { name: `E2E Project ${stamp}`, stages: [{ name: "Contract signed" }, { name: "Framing" }, { name: "Finishes" }] });
+    r = await call(staffJar, "POST", "/api/projects", { name: `E2E Project ${stamp}`, stages: [{ name: "Contract signed", cutoffDate: "2026-11-14" }, { name: "Framing" }, { name: "Finishes" }] });
     check("staff can create a project with stages", r.status === 201 && r.json?.name === `E2E Project ${stamp}` && r.json?.stages?.map((x) => x.name).join() === "Contract signed,Framing,Finishes", `${r.status} ${JSON.stringify(r.json)}`);
+    check("a stage keeps its due date", r.json?.stages?.[0]?.cutoff_date === "2026-11-14", String(r.json?.stages?.[0]?.cutoff_date));
     const made = r.json;
     r = await call(staffJar, "POST", "/api/projects", { name: "Dupe", stages: [{ name: "A" }, { name: "a" }] });
     check("two stages with the same name are refused", r.status === 400, String(r.status));
     const [s1, s2, s3] = made.stages;
-    r = await call(staffJar, "PUT", `/api/projects/${made.id}`, { name: `E2E Project ${stamp}`, stages: [{ id: s3.id, name: "Finishes" }, { id: s1.id, name: "Contract signed (renamed)" }, { name: "Punch list" }] });
+    r = await call(staffJar, "PUT", `/api/projects/${made.id}`, { name: `E2E Project ${stamp}`, stages: [{ id: s3.id, name: "Finishes" }, { id: s1.id, name: "Contract signed (renamed)", cutoffDate: "2026-12-01" }, { name: "Punch list" }] });
     check("reordering, renaming, adding and removing stages saves in one go", r.status === 200 && r.json?.stages?.map((x) => x.name).join() === "Finishes,Contract signed (renamed),Punch list" && r.json.stages[0].id === s3.id && !r.json.stages.some((x) => x.id === s2.id), `${r.status} ${JSON.stringify(r.json?.stages?.map((x) => x.name))}`);
+    check("a due date can be changed while saving", r.json?.stages?.[1]?.cutoff_date === "2026-12-01" && r.json?.stages?.[0]?.cutoff_date === null, JSON.stringify(r.json?.stages?.map((x) => x.cutoff_date)));
     r = await call(staffJar, "GET", `/api/projects/${made.id}`);
     check("the saved order is read back", r.status === 200 && r.json?.stages?.map((x) => x.position).join() === "1,2,3");
     r = await call(staffJar, "GET", "/api/projects");
