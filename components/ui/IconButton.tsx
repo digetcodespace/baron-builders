@@ -1,15 +1,26 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+"use client";
+
+import type { ButtonHTMLAttributes, PointerEvent, ReactNode } from "react";
+import { SURFACE, Wipe, useRipple } from "./_buttonMotion";
 import { Icon, type IconName } from "./Icon";
 import { Tooltip } from "./Tooltip";
 
 type Variant = "ghost" | "secondary" | "primary" | "ink";
 type Size = "sm" | "md" | "lg";
 
-const VARIANTS: Record<Variant, string> = {
-  ghost: "text-text hover:bg-ink-soft",
-  secondary: "border border-border bg-surface text-text shadow-low hover:border-n-300 hover:bg-n-50",
-  primary: "bg-primary text-on-primary shadow-[var(--shadow-btn)] hover:bg-primary-hover",
-  ink: "bg-ink text-on-primary shadow-[var(--shadow-ink)] hover:bg-n-800",
+const VARIANTS: Record<Variant, { base: string; wipe: string; ripple: "light" | "dark" }> = {
+  ghost: { base: "bg-transparent text-text", wipe: "bg-ink-soft", ripple: "dark" },
+  secondary: {
+    base: "border border-border bg-surface text-text shadow-low hover:border-n-300",
+    wipe: "bg-n-100",
+    ripple: "dark",
+  },
+  primary: {
+    base: "bg-primary text-on-primary shadow-[var(--shadow-btn)] hover:shadow-[var(--shadow-btn-hover)]",
+    wipe: "bg-primary-hover",
+    ripple: "light",
+  },
+  ink: { base: "bg-ink text-on-primary shadow-[var(--shadow-ink)]", wipe: "bg-primary", ripple: "light" },
 };
 const SIZES: Record<Size, { box: string; icon: number }> = {
   sm: { box: "h-8 w-8", icon: 16 },
@@ -39,16 +50,25 @@ export function IconButton({
   showTooltip = true,
   className = "",
   type = "button",
+  onPointerDown,
   ...rest
 }: IconButtonProps) {
+  const style = VARIANTS[variant];
+  const ripple = useRipple(style.ripple);
   const button = (
     <button
       type={type}
       aria-label={label}
-      className={`inline-flex shrink-0 select-none items-center justify-center rounded-md transition-[background-color,box-shadow,transform,border-color] duration-[var(--dur-base)] ease-[var(--ease-out)] hover:-translate-y-px active:translate-y-0 active:scale-95 active:duration-[var(--dur-fast)] disabled:pointer-events-none disabled:opacity-50 ${VARIANTS[variant]} ${SIZES[size].box} ${className}`}
+      className={`${SURFACE} ${style.base} ${SIZES[size].box} ${className}`}
+      onPointerDown={(event: PointerEvent<HTMLButtonElement>) => {
+        ripple.onPointerDown(event);
+        onPointerDown?.(event);
+      }}
       {...rest}
     >
-      <Icon name={icon} size={SIZES[size].icon} />
+      <Wipe className={style.wipe} />
+      {ripple.layer}
+      <Icon name={icon} size={SIZES[size].icon} className="transition-transform duration-[var(--dur-base)] ease-[var(--ease-spring)] group-hover/btn:scale-110" />
     </button>
   );
   return showTooltip ? <Tooltip content={content ?? label}>{button}</Tooltip> : button;

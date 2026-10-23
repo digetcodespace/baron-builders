@@ -8,7 +8,7 @@ export { BrandLoader } from "./BrandLoader";
 export { BrandLogo } from "./BrandLogo";
 export { Breadcrumbs } from "./Breadcrumbs";
 export type { Crumb } from "./Breadcrumbs";
-export { Button, LinkButton, buttonClasses } from "./Button";
+export { Button, LinkButton } from "./Button";
 export type { ButtonProps, ButtonSize, ButtonVariant, LinkButtonProps } from "./Button";
 export { Calendar } from "./Calendar";
 export { Card, CardFooter, CardHeader } from "./Card";
