@@ -27,7 +27,7 @@ export function ProjectsView() {
     <>
       <PageHeader
         title="Projects"
-        description="Each development is a pipeline. Open one to manage its stages, house types, and more."
+        info="Each development is a pipeline. Open a project to manage its stages, house types, and more."
         actions={
           <Button leftIcon="plus" onClick={() => setCreating(true)}>
             New project

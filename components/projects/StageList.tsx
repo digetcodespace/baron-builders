@@ -124,9 +124,6 @@ export function StageList({ stages, onChange, fieldErrors = {} }: StageListProps
       <Button className="mt-3" variant="secondary" size="sm" leftIcon="plus" onClick={() => addAfter(stages.length - 1)}>
         Add stage
       </Button>
-      <p className="mt-3 max-w-prose t-small">
-        Each stage has its own color. The due date is the last day for the stage, and it is the same for every house type in the project. Press Enter in a stage to add the next one; stages with no name are skipped.
-      </p>
     </div>
   );
 }

@@ -44,7 +44,7 @@ export function PeopleView() {
     <>
       <PageHeader
         title="People"
-        description="Staff, buyers, and vendors. Everyone signs in with an emailed code."
+        info="Staff, buyers, and vendors. Everyone signs in with an emailed code, with no password."
         actions={
           <Button leftIcon="plus" onClick={() => setInviting(true)}>
             Invite someone

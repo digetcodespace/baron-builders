@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, PageHeader, Tabs, TextField } from "@/components/ui";
+import { Button, InfoHint, PageHeader, Tabs, TextField } from "@/components/ui";
 import { useToast } from "@/components/providers";
 import type { ProjectDetail } from "@/lib/data";
 import { useSaveProject } from "@/hooks/useProjects";
@@ -50,7 +50,6 @@ export function ProjectView({ project }: { project: ProjectDetail }) {
       <PageHeader
         title={saved.name}
         back={{ href: "/staff/projects", label: "Projects" }}
-        description="Everything about this project in one place."
         actions={
           dirty ? (
             <>
@@ -87,6 +86,12 @@ export function ProjectView({ project }: { project: ProjectDetail }) {
             badge: stages.filter((s) => s.name.trim()).length,
             content: (
               <div className="max-w-3xl pt-6">
+                <div className="mb-3 flex items-center gap-2">
+                  <h2 className="t-h4">Stages</h2>
+                  <InfoHint label="About stages">
+                    Drag a stage to reorder it. Each stage has its own color. The due date is the last day for the stage, and it is the same for every house type in the project. Press Enter in a stage to add the next one; stages with no name are skipped.
+                  </InfoHint>
+                </div>
                 <StageList stages={stages} onChange={setStages} fieldErrors={fieldErrors} />
               </div>
             ),

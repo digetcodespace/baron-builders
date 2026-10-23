@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Drawer, TextField } from "@/components/ui";
+import { Button, Drawer, InfoHint, TextField } from "@/components/ui";
 import { useToast } from "@/components/providers";
 import type { ProjectDetail } from "@/lib/data";
 import { useSaveProject } from "@/hooks/useProjects";
@@ -61,10 +61,15 @@ export function NewProjectDrawer({ open, onClose, onCreated }: NewProjectDrawerP
       <div className="space-y-8 py-1">
         <TextField label="Project name" value={name} error={fieldErrors.name} onChange={(e) => setName(e.target.value)} data-autofocus />
         <section aria-labelledby="new-stages-heading">
-          <div className="mb-3 flex items-baseline justify-between">
-            <h3 id="new-stages-heading" className="t-h4">
-              Stages
-            </h3>
+          <div className="mb-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <h3 id="new-stages-heading" className="t-h4">
+                Stages
+              </h3>
+              <InfoHint label="About stages">
+                Drag a stage to reorder it. Each stage has its own color. The due date is the last day for the stage, and it is the same for every house type in the project. Press Enter in a stage to add the next one; stages with no name are skipped.
+              </InfoHint>
+            </div>
             <span className="t-small">{stages.filter((s) => s.name.trim()).length} named</span>
           </div>
           <StageList stages={stages} onChange={setStages} fieldErrors={fieldErrors} />
