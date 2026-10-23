@@ -91,6 +91,18 @@ scripts/checks/            The structural checks and their allowlists
 5. **Route:** `app/api/<thing>/route.ts` (copy `app/api/houses/route.ts`).
 6. **UI:** a hook in `hooks/` (use `usePaginatedList` for lists, `useApiErrorHandler` for errors), a component in `components/<thing>/`, a page that prefetches the first page.
 
+## Database migrations
+
+Agents run migrations themselves, through the Supabase CLI. The project is linked to **Baron Builders** (`syxcjsjquxvqqyxtxvme`).
+
+```bash
+npx supabase db push --dry-run   # list what would be applied
+npx supabase db push             # apply
+npm run db:test                  # the stranger test; rolls back, must show 0 failed
+```
+
+Never edit an applied migration; add a new one. After any schema or policy change, extend `supabase/tests/stranger.sql` and update DATABASE.md and ACCESS.md.
+
 ## Environment
 
 Copy `.env.example` to `.env.local`. Never commit real values and never edit `.env.local` from an agent session. The app boots without Supabase configured (sign-in redirects), but nothing past sign-in works until `NEXT_PUBLIC_SUPABASE_URL` and the publishable key are set.

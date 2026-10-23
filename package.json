@@ -15,7 +15,9 @@
     "check:service-role": "node scripts/checks/service-role.mjs",
     "check:list-pagination": "node scripts/checks/list-pagination.mjs",
     "check:spelling": "node scripts/checks/spelling.mjs",
-    "check:ci": "npm run check && npm run typecheck && npm run lint && npm run build"
+    "check:ci": "npm run check && npm run typecheck && npm run lint && npm run build",
+    "db:push": "supabase db push",
+    "db:test": "supabase db query --linked -f supabase/tests/stranger.sql"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

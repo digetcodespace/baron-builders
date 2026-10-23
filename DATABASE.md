@@ -60,7 +60,7 @@ Also adds `vendors.email` and `vendors.phone` (the contact details a buyer sees)
 
 **Realtime:** `selections`, `vendor_item_progress`, and `sheet_signatures` join the `supabase_realtime` publication.
 
-**Status: written, not yet run against a database.** Apply it to a scratch Supabase project and run the stranger test (ACCESS.md) before relying on it.
+**Status: applied** to the Baron Builders project on 2026-10-22, and the stranger test (`supabase/tests/stranger.sql`, 26 checks) passes against it.
 
 ## Planned (next migration)
 

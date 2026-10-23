@@ -60,4 +60,4 @@ Every access change ships with tests for: a buyer on a different house, a buyer 
 - Vendors read only houses with an open item for their company, the buyers' contact details on those houses, and their own items. They never reach selections, prices, or invoices.
 - Signing goes only through `sign_sheet()` (service role), and signed selections are locked for everyone.
 
-It is written but **not yet run against a database**. Invoices, payments, and messages come next.
+Both migrations are applied, and `npm run db:test` runs the stranger test (26 checks: staff, two buyers, two vendors on different trades, and a user with no profile) against the live database. Invoices, payments, and messages come next.

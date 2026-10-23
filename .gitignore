@@ -15,3 +15,9 @@ dist/
 .vercel
 npm-debug.log*
 !.env.example
+
+.vercel
+.env*
+
+supabase/.temp/
+supabase/.branches/
