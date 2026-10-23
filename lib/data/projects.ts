@@ -4,7 +4,7 @@ import { capLimit, descCursorOrPredicate, toPage, type Page, type PageParams } f
 import type { ProjectDetail, ProjectRow, ProjectStageRow } from "./types";
 
 const PROJECT_COLUMNS = "id, name, created_at";
-const STAGE_COLUMNS = "id, project_id, name, position, cutoff_date";
+const STAGE_COLUMNS = "id, project_id, name, position, cutoff_date, color";
 
 export async function listProjects(db: Db, params: PageParams = {}): Promise<Page<ProjectRow>> {
   const limit = capLimit(params.limit);
@@ -39,7 +39,7 @@ export interface SaveProjectInput {
   projectId?: string;
   name: string;
   /** In display order. An id keeps and renames an existing stage; none adds one; a missing one is removed. */
-  stages: { id?: string; name: string; cutoffDate?: string | null }[];
+  stages: { id?: string; name: string; cutoffDate?: string | null; color?: string | null }[];
 }
 
 /** Create or update a project and its stages in one transaction (`save_project`). Returns the project id. */
@@ -47,7 +47,7 @@ export async function saveProject(db: Db, input: SaveProjectInput): Promise<stri
   const { data, error } = await db.rpc("save_project", {
     p_project_id: input.projectId ?? null,
     p_name: input.name,
-    p_stages: input.stages.map((s) => ({ id: s.id ?? null, name: s.name, cutoff_date: s.cutoffDate ?? null })),
+    p_stages: input.stages.map((s) => ({ id: s.id ?? null, name: s.name, cutoff_date: s.cutoffDate ?? null, color: s.color ?? null })),
   });
   if (error) {
     if (error.code === "23503") {

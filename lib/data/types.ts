@@ -32,6 +32,8 @@ export interface ProjectStageRow {
   name: string;
   position: number;
   cutoff_date: string | null;
+  /** `#rrggbb`, or null until one is chosen. */
+  color: string | null;
 }
 
 /** A project with its stages, in order. */

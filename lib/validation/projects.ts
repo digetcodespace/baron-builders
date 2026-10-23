@@ -8,6 +8,11 @@ const stage = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Use a real date")
     .nullish(),
+  color: z
+    .string()
+    .regex(/^#[0-9a-fA-F]{6}$/, "Pick a color")
+    .transform((c) => c.toLowerCase())
+    .nullish(),
 });
 
 export const MAX_STAGES = 200;

@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Button, DateField, Drawer, IconButton, Skeleton, SortableList, TextField } from "@/components/ui";
+import { Button, ColorPicker, DateField, Drawer, IconButton, Skeleton, SortableList, TextField } from "@/components/ui";
 import { useToast } from "@/components/providers";
+import { swatchColors } from "@/lib/design/tokens";
 import { useProjectDetail, useSaveProject } from "@/hooks/useProjects";
 
 interface StageDraft {
@@ -11,11 +12,18 @@ interface StageDraft {
   id?: string;
   name: string;
   cutoffDate: string | null;
+  color: string;
 }
 
 let counter = 0;
 const newKey = () => `new-${++counter}`;
-const blankStage = (): StageDraft => ({ key: newKey(), name: "", cutoffDate: null });
+
+/** The first swatch no stage uses yet, so each stage starts with a color of its own. */
+function unusedColor(taken: string[]): string {
+  return (swatchColors.find((c) => !taken.includes(c.hex)) ?? swatchColors[taken.length % swatchColors.length]).hex;
+}
+
+const blankStage = (taken: string[]): StageDraft => ({ key: newKey(), name: "", cutoffDate: null, color: unusedColor(taken) });
 
 export interface ProjectDrawerProps {
   open: boolean;
@@ -47,10 +55,18 @@ export function ProjectDrawer({ open, projectId, onClose, onSaved }: ProjectDraw
       clearErrors();
       if (!projectId) {
         setName("");
-        setStages([blankStage()]);
+        setStages([blankStage([])]);
       } else if (project && project.id === projectId) {
         setName(project.name);
-        setStages(project.stages.map((s) => ({ key: s.id, id: s.id, name: s.name, cutoffDate: s.cutoff_date })));
+        // Stages saved before colors existed get one now; it is stored the next time the project is saved.
+        const taken: string[] = project.stages.flatMap((s) => (s.color ? [s.color] : []));
+        setStages(
+          project.stages.map((s) => {
+            const color = s.color ?? unusedColor(taken);
+            if (!s.color) taken.push(color);
+            return { key: s.id, id: s.id, name: s.name, cutoffDate: s.cutoff_date, color };
+          }),
+        );
       }
     });
     return () => cancelAnimationFrame(frame);
@@ -65,13 +81,14 @@ export function ProjectDrawer({ open, projectId, onClose, onSaved }: ProjectDraw
   }, [stages]);
 
   const addStageAfter = (index: number) => {
-    const stage = blankStage();
+    const stage = blankStage(stages.map((s) => s.color));
     focusKey.current = stage.key;
     setStages((current) => [...current.slice(0, index + 1), stage, ...current.slice(index + 1)]);
   };
 
   const rename = (key: string, value: string) => setStages((current) => current.map((s) => (s.key === key ? { ...s, name: value } : s)));
   const setDue = (key: string, iso: string) => setStages((current) => current.map((s) => (s.key === key ? { ...s, cutoffDate: iso || null } : s)));
+  const setColor = (key: string, color: string) => setStages((current) => current.map((s) => (s.key === key ? { ...s, color } : s)));
   const remove = (key: string) => setStages((current) => current.filter((s) => s.key !== key));
 
   const save = async () => {
@@ -79,7 +96,7 @@ export function ProjectDrawer({ open, projectId, onClose, onSaved }: ProjectDraw
     const saved = await submit({
       projectId: projectId ?? undefined,
       name,
-      stages: filled.map((s) => ({ id: s.id, name: s.name, cutoffDate: s.cutoffDate })),
+      stages: filled.map((s) => ({ id: s.id, name: s.name, cutoffDate: s.cutoffDate, color: s.color })),
     });
     if (!saved) return;
     addToast(projectId ? "Project saved" : `${saved.name} created`, { tone: "ok" });
@@ -141,6 +158,12 @@ export function ProjectDrawer({ open, projectId, onClose, onSaved }: ProjectDraw
                     <span aria-hidden="true" className="w-5 shrink-0 text-center font-mono text-[length:var(--fs-label)] text-n-500">
                       {index + 1}
                     </span>
+                    <ColorPicker
+                      label={`Color for ${stage.name.trim() || `stage ${index + 1}`}`}
+                      value={stage.color}
+                      onChange={(hex) => setColor(stage.key, hex)}
+                      usedColors={stages.filter((s) => s.key !== stage.key).map((s) => s.color)}
+                    />
                     <div className="grid min-w-0 flex-1 gap-1.5 sm:grid-cols-[minmax(0,1fr)_11.5rem]">
                       <TextField
                         label="Stage name"
@@ -167,7 +190,7 @@ export function ProjectDrawer({ open, projectId, onClose, onSaved }: ProjectDraw
             <Button className="mt-3" variant="secondary" size="sm" leftIcon="plus" onClick={() => addStageAfter(stages.length - 1)}>
               Add stage
             </Button>
-            <p className="mt-3 t-small">The due date is the last day for this stage. It is the same for every house type in the project. Press Enter in a stage to add the next one; stages with no name are skipped.</p>
+            <p className="mt-3 t-small">Each stage has its own color. The due date is the last day for the stage, and it is the same for every house type in the project. Press Enter in a stage to add the next one; stages with no name are skipped.</p>
           </section>
         </div>
       )}

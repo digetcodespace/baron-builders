@@ -125,9 +125,12 @@ await (async () => {
     check("staff can list people", r.status === 200 && r.json?.items?.some((p) => p.email === staffEmail));
     r = await call(staffJar, "POST", "/api/projects", { name: "   ", stages: [] });
     check("a blank project name is refused with a field error", r.status === 400 && r.json?.error?.field === "name", `${r.status} ${JSON.stringify(r.json)}`);
-    r = await call(staffJar, "POST", "/api/projects", { name: `E2E Project ${stamp}`, stages: [{ name: "Contract signed", cutoffDate: "2026-11-14" }, { name: "Framing" }, { name: "Finishes" }] });
+    r = await call(staffJar, "POST", "/api/projects", { name: `E2E Project ${stamp}`, stages: [{ name: "Contract signed", cutoffDate: "2026-11-14", color: "#C41E2A" }, { name: "Framing", color: "#3b82f6" }, { name: "Finishes" }] });
     check("staff can create a project with stages", r.status === 201 && r.json?.name === `E2E Project ${stamp}` && r.json?.stages?.map((x) => x.name).join() === "Contract signed,Framing,Finishes", `${r.status} ${JSON.stringify(r.json)}`);
     check("a stage keeps its due date", r.json?.stages?.[0]?.cutoff_date === "2026-11-14", String(r.json?.stages?.[0]?.cutoff_date));
+    check("stage colors are saved lowercase, and a stage may have none", r.json?.stages?.map((x) => x.color).join() === "#c41e2a,#3b82f6," || JSON.stringify(r.json?.stages?.map((x) => x.color)) === JSON.stringify(["#c41e2a", "#3b82f6", null]), JSON.stringify(r.json?.stages?.map((x) => x.color)));
+    const badColor = await call(staffJar, "POST", "/api/projects", { name: "Bad color", stages: [{ name: "A", color: "red" }] });
+    check("a color that is not a hex code is refused", badColor.status === 400, String(badColor.status));
     const made = r.json;
     r = await call(staffJar, "POST", "/api/projects", { name: "Dupe", stages: [{ name: "A" }, { name: "a" }] });
     check("two stages with the same name are refused", r.status === 400, String(r.status));

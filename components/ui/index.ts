@@ -15,6 +15,8 @@ export type { ButtonProps, ButtonSize, ButtonVariant, LinkButtonProps } from "./
 export { Calendar } from "./Calendar";
 export { Card, CardFooter, CardHeader } from "./Card";
 export { Checkbox } from "./Checkbox";
+export { ColorPicker } from "./ColorPicker";
+export type { ColorPickerProps } from "./ColorPicker";
 export { ConfirmDialog } from "./ConfirmDialog";
 export { SortableList } from "./SortableList";
 export type { SortableListProps } from "./SortableList";

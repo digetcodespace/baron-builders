@@ -76,6 +76,10 @@ Supabase Auth inserts a new user first and attaches `app_metadata` (where the ro
 
 `save_project(project_id, name, stages jsonb)` creates or updates a project and its ordered stages in one transaction (security invoker, so staff RLS decides who may call it). Stages arrive in display order: one with an `id` is renamed and moved, one without is added, and any existing stage not listed is removed (the foreign key from `houses.status_id` refuses if a house is still in it). Positions are renumbered 1..n, and the deferred `unique (project_id, position)` means a reorder never collides mid-save. Stages are unlimited (the service caps a request at 200). **Applied** with `supabase db push`; covered by the e2e checks.
 
+### [20261024000002_stage_colors.sql](supabase/migrations/20261024000002_stage_colors.sql)
+
+`project_statuses.color`: a six-digit lowercase hex (`#c41e2a`), checked by a constraint, null until chosen. `save_project` now reads and stores each stage's `color`. The 25 swatches offered in the picker live in `lib/design/tokens.ts` (`swatchColors`); any other color can be picked freely and is saved as the same hex. **Applied** with `supabase db push`.
+
 ## Planned (next migration)
 
 Invoices and revisions (a change after signing produces a revised invoice or a credit), payments, messages and documents, and reminders.
